@@ -19,11 +19,11 @@
 # Change the file extension to match the format (.xml for XML, etc...)
 #
 ###
-title: "TODO - Your title"
-abbrev: "TODO - Abbreviation"
-category: info
+title: "SRv6 Security Considerations"
+abbrev: "SRv6 Security Considerations"
+category: standards
 
-docname: draft-todo-yourname-protocol-latest
+docname: draft-bdmgct-spring-srv6-security
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
