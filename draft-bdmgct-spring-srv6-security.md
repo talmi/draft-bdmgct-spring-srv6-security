@@ -9,12 +9,12 @@ number:
 date:
 consensus: true
 v: 3
-area: Int
-workgroup: SPRING
+area: "Routing"
+workgroup: "Source Packet Routing in Networking"
 keyword:
  - Internet-Draft
 venue:
-  group: "SPRING"
+  group: "Source Packet Routing in Networking"
   type: "Working Group"
   mail: "spring@ietf.org"
   arch: "https://mailarchive.ietf.org/arch/browse/spring/"
