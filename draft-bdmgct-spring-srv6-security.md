@@ -30,6 +30,9 @@ author:
 
 normative:
   RFC2119:
+  IANAIPv6SPAR:
+    target: https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
+    title: "IANA IPv6 Special-Purpose Address Registry"
 
 informative:
 
@@ -58,8 +61,7 @@ TODO Security
 
 # IANA Considerations
 
-This document has no IANA actions.
-
+Example non-RFC link {{IANAIPv6SPAR}}
 
 --- back
 
