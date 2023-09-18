@@ -21,7 +21,7 @@
 ###
 title: "SRv6 Security Considerations"
 abbrev: "SRv6 Security Considerations"
-category: standards
+category: std
 
 docname: draft-bdmgct-spring-srv6-security
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
@@ -29,27 +29,27 @@ number:
 date:
 consensus: true
 v: 3
-area: AREA
-workgroup: WG Working Group
+area: Int
+workgroup: SPRING
 keyword:
- - next generation
- - unicorn
- - sparkling distributed ledger
+ - Internet-Draft
 venue:
-  group: WG
-  type: Working Group
-  mail: WG@example.com
-  arch: https://example.com/WG
-  github: USER/REPO
-  latest: https://example.com/LATEST
+  group: "SPRING"
+  type: "Working Group"
+  mail: "spring@ietf.org"
+  arch: "https://mailarchive.ietf.org/arch/browse/spring/"
+  github: "buraglio/draft-bdmgct-spring-srv6-security"
+  latest: "https://buraglio.github.io/draft-bdmgct-spring-srv6-security/draft-bdmgct-spring-srv6-security.html"
 
 author:
  -
-    fullname: Your Name Here
-    organization: Your Organization Here
-    email: your.email@example.com
+   ins: N. Buraglio
+   name: Nick Buraglio
+   org: Energy Sciences Network
+   email: buraglio@forwardingplane.net
 
 normative:
+  RFC2119:
 
 informative:
 
