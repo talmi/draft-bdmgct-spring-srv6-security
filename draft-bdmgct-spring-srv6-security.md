@@ -31,7 +31,6 @@ author:
 normative:
   RFC2119:
   
-
 informative:
   RFC8754:
   RFC9256:
@@ -46,13 +45,11 @@ informative:
 
 TODO Abstract
 
-
 --- middle
 
 # Introduction
 
 TODO Introduction
-
 
 # Conventions and Definitions
 
@@ -77,7 +74,6 @@ Existing implementations may contain limited filtering capabilities necesary for
 # Security Considerations
 
 TODO Security
-
 
 # IANA Considerations
 
