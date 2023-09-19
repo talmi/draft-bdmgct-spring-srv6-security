@@ -70,9 +70,11 @@ TODO Introduction
 
 ## Exposure of internal Traffic Engineering paths
 
-Existing implementations may contain limited filtering capabilities necesary for proper isolation of the SRH from outside of an SRv6 domain. 
+Existing implementations may contain limited filtering capabilities necesary for proper isolation of the SRH from outside of an SRv6 domain.
 
+## Emerging technology growing pains
 
+# Security Considerations
 
 TODO Security
 
