@@ -30,12 +30,17 @@ author:
 
 normative:
   RFC2119:
+  
+
+informative:
+  RFC8754:
+  RFC9256:
+  RFC8696:
+  RFC8754:
+  RFC8200:
   IANAIPv6SPAR:
     target: https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
     title: "IANA IPv6 Special-Purpose Address Registry"
-
-informative:
-
 
 --- abstract
 
@@ -53,8 +58,21 @@ TODO Introduction
 
 {::boilerplate bcp14-tagged}
 
+# Security Considerations in Operational SRv6 Enabled Networks
 
-# Security Considerations
+## Existing IPv6 Vulnerabilities
+
+## Segment Routing Header
+
+## Locator Block
+
+## Limits in filtering capabilities
+
+## Exposure of internal Traffic Engineering paths
+
+Existing implementations may contain limited filtering capabilities necesary for proper isolation of the SRH from outside of an SRv6 domain. 
+
+
 
 TODO Security
 
