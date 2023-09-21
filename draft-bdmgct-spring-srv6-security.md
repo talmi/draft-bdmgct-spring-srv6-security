@@ -23,15 +23,15 @@ venue:
 
 author:
  -
-   ins: N. Buraglio
-   name: Nick Buraglio
-   org: Energy Sciences Network
-   email: buraglio@forwardingplane.net
- -
-   ins: T. Mizrahi
-   name: Tal Mizrahi
-   org: Huawei
-   email: tal.mizrahi.phd@gmail.com
+    ins: N. Buraglio
+    name: Nick Buraglio
+    org: Energy Sciences Network
+    email: buraglio@forwardingplane.net
+
+    ins: T. Mizrahi
+    name: Tal Mizrahi
+    org: Huawei
+    email: tal.mizrahi.phd@gmail.com
 
 normative:
   RFC2119:
