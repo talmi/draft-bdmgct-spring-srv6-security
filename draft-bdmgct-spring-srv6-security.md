@@ -27,7 +27,7 @@ author:
     name: Nick Buraglio
     org: Energy Sciences Network
     email: buraglio@forwardingplane.net
-
+ -
     ins: T. Mizrahi
     name: Tal Mizrahi
     org: Huawei
@@ -39,9 +39,12 @@ normative:
 informative:
   RFC8754:
   RFC9256:
-  RFC8696:
   RFC8754:
   RFC8200:
+  RFC3552:
+  RFC9055:
+  RFC7384:
+  RFC8986:
   IANAIPv6SPAR:
     target: https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
     title: "IANA IPv6 Special-Purpose Address Registry"
@@ -62,13 +65,16 @@ TODO Introduction
 
 # Threat Model
 
-This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model {{RFC3552}}, as well as some concepts from {{RFC 9055}} and {{RFC7384}}.
+This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model {{RFC3552}}, as well as some concepts from {{RFC9055}} and {{RFC7384}}.
 
 # Security Considerations in Operational SRv6 Enabled Networks
+{{RFC9256}} {{RFC8986}}
 
 ## Existing IPv6 Vulnerabilities
+{{RFC8200}}
 
 ## Segment Routing Header
+{{RFC8754}}
 
 ## Locator Block
 
