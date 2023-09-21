@@ -27,6 +27,11 @@ author:
    name: Nick Buraglio
    org: Energy Sciences Network
    email: buraglio@forwardingplane.net
+ -
+   ins: T. Mizrahi
+   name: Tal Mizrahi
+   org: Huawei
+   email: tal.mizrahi.phd@gmail.com
 
 normative:
   RFC2119:
@@ -55,6 +60,10 @@ TODO Introduction
 
 {::boilerplate bcp14-tagged}
 
+# Threat Model
+
+This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model {{RFC3552}}, as well as some concepts from {{RFC 9055}} and {{RFC7384}}.
+
 # Security Considerations in Operational SRv6 Enabled Networks
 
 ## Existing IPv6 Vulnerabilities
@@ -70,6 +79,14 @@ TODO Introduction
 Existing implementations may contain limited filtering capabilities necesary for proper isolation of the SRH from outside of an SRv6 domain.
 
 ## Emerging technology growing pains
+
+# Mitigation Methods
+
+This section presents methods that can be used to mitigate the threats and issues that were presented in previous sections. This section does not introduce new security solutions or protocols.
+
+# Gap Analysis
+
+This section analyzes the security related gaps with respect to the threats and issues that were discussed in the previous sections.
 
 # Security Considerations
 
