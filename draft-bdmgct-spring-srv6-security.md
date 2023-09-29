@@ -55,7 +55,7 @@ SRv6 is a traffic engineering, encapsulation, and steering mechanism itilizing I
 
 A typical IPv6 unicast address is comprised of a network prefix, host identifier, and a subnet mask. A typical SRv6 segment identifier (SID) is broken into a locator, a function identifier, and optionally, function arguments. The locator must be routable, which enables both SRv6 capable and incapable devices to participate in forwarding, either as normal IPv6 unicast or SRv6. The capability to operate in environments that may have gaps in SRv6 support allows the bridging of islands of SRv6 devices with standard IPv6 unicast routing.
 
-As standard IPv6 addressing, there are security considerations that should be well understood that may not be obvious.  
+As standard IPv6 addressing, there are security considerations that should be well understood that may not be obvious.
 
 --- middle
 
@@ -85,7 +85,7 @@ This section introduces the threat model that is used in this document. The mode
 
 ## Encapsulation of packets
 
-### Allowing potential circumvention of existing network ingress / egress policy. 
+### Allowing potential circumvention of existing network ingress / egress policy.
 
 SRv6 packets rely on the routing header in order to steer traffic that adheres to a defined SRv6 traffic policy. This mechanism supports not only use of the IPv6 routing header for packet steering, it also allows for encapsulation of both IPv4 and IPv6 packets.
 
@@ -119,9 +119,9 @@ IPv6 routing header
 ## Segment Routing Header
 {{RFC8754}}
 
-## Source Routing 
+## Source Routing
 
-### Source Routing at source host 
+### Source Routing at source host
 
 Unlike SR-MPLS, SRv6 has a significantly more approachable host implementation.
 
