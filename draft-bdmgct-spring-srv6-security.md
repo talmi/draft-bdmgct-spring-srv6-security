@@ -168,7 +168,7 @@ This section analyzes the security related gaps with respect to the threats and 
 
 # Other considerations
 
-### Existing IPv6 Vulnerabilities
+## Existing IPv6 Vulnerabilities
 {{RFC8200}}
 
 # Security Considerations
