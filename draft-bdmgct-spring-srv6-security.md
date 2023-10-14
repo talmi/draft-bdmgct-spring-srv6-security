@@ -140,11 +140,13 @@ Unlike SR-MPLS, SRv6 has a significantly more approachable host implementation.
 
 ### SID spoofing
 
-### Snooping, Spoofing, and packet capture 
+### Snooping and Packet Capture
 
-#### SID lists (IPv6 addresses)
+### Spoofing
 
-#### Path enumeration
+### SID lists (IPv6 addresses)
+
+### Path enumeration
 
 ### Infrastructure and topology exposure
 
