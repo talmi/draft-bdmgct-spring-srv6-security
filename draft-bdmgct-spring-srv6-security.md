@@ -45,6 +45,7 @@ informative:
   RFC9055:
   RFC7384:
   RFC8986:
+  RFC7855:
   IANAIPv6SPAR:
     target: https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
     title: "IANA IPv6 Special-Purpose Address Registry"
@@ -72,16 +73,16 @@ Locator Block
 FRR
 SID
 uSID
+SRH
 
 # Threat Model
 
 This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model {{RFC3552}}, as well as some concepts from {{RFC9055}} and {{RFC7384}}.
 
+Segment routing over an IPv6 data plane (SRv6).
+
 # Security Considerations in Operational SRv6 Enabled Networks
 {{RFC9256}} {{RFC8986}}
-
-## Existing IPv6 Vulnerabilities
-{{RFC8200}}
 
 ## Encapsulation of packets
 
@@ -116,11 +117,14 @@ IPv6 routing header
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~
 
+### Default allow failure mode
+Use of GUA addressing in data plane programming could result in an fail open scenario when appropriate border filtering is not implemented or supported. 
+
 ## Segment Routing Header
 {{RFC8754}}
 
 ## Source Routing
-
+{{RFC7855}}
 ### Source Routing at source host
 
 Unlike SR-MPLS, SRv6 has a significantly more approachable host implementation.
@@ -128,6 +132,22 @@ Unlike SR-MPLS, SRv6 has a significantly more approachable host implementation.
 ### Source Routing from PCC at network ingress
 
 ## Locator Block
+
+## Segment Identifiers
+
+### SID Compression
+
+### SID spoofing
+
+### Snooping, Spoofing, and packet capture 
+
+#### SID lists (IPv6 addresses)
+
+#### Path enumeration
+
+### Infrastructure and topology exposure
+
+This seems like a non-issue from a WAN perspective. Needs more thought - could be problematic in a host to host scenario involving a WAN and/or a data center fabric.
 
 ## Limits in filtering capabilities
 
@@ -144,6 +164,10 @@ This section presents methods that can be used to mitigate the threats and issue
 # Gap Analysis
 
 This section analyzes the security related gaps with respect to the threats and issues that were discussed in the previous sections.
+## Other considerations
+
+### Existing IPv6 Vulnerabilities
+{{RFC8200}}
 
 # Security Considerations
 
