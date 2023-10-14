@@ -91,7 +91,7 @@ Segment routing over an IPv6 data plane (SRv6).
 SRv6 packets rely on the routing header in order to steer traffic that adheres to a defined SRv6 traffic policy. This mechanism supports not only use of the IPv6 routing header for packet steering, it also allows for encapsulation of both IPv4 and IPv6 packets.
 
 IPv6 routing header
-~~~~~
+~~~~~~~~~~
  0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -115,7 +115,7 @@ IPv6 routing header
     |                                                               |
     |                                                               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~~~
+~~~~~~~~~~
 
 ### Default allow failure mode
 Use of GUA addressing in data plane programming could result in an fail open scenario when appropriate border filtering is not implemented or supported.
