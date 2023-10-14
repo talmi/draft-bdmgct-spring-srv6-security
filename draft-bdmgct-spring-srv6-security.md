@@ -125,6 +125,7 @@ Use of GUA addressing in data plane programming could result in an fail open sce
 
 ## Source Routing
 {{RFC7855}}
+
 ### Source Routing at source host
 
 Unlike SR-MPLS, SRv6 has a significantly more approachable host implementation.
@@ -164,6 +165,7 @@ This section presents methods that can be used to mitigate the threats and issue
 # Gap Analysis
 
 This section analyzes the security related gaps with respect to the threats and issues that were discussed in the previous sections.
+
 # Other considerations
 
 ### Existing IPv6 Vulnerabilities
