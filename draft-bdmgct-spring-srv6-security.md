@@ -118,7 +118,7 @@ IPv6 routing header
 ~~~~~
 
 ### Default allow failure mode
-Use of GUA addressing in data plane programming could result in an fail open scenario when appropriate border filtering is not implemented or supported. 
+Use of GUA addressing in data plane programming could result in an fail open scenario when appropriate border filtering is not implemented or supported.
 
 ## Segment Routing Header
 {{RFC8754}}
