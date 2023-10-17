@@ -79,7 +79,67 @@ SRH
 
 This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model {{RFC3552}}, as well as some concepts from {{RFC9055}} and {{RFC7384}}.
 
-Segment routing over an IPv6 data plane (SRv6).
+##Security Components
+
+The main components of information security are confidentiality, integrity and availablitlity, often referred to by the acronym CIA. A short description of each of these components is presented below in the context of SRv6 security.
+
+###Confidentiality
+
+The purpose of confidentiality is to protect the user data from being exposed to unauthorized users, i.e., preventing attackers from eavesdropping to user data. The confidentiality of user data is outside the scope of this document. However, confidentiality aspects of SRv6-related information are within the scope; collecting information about SR endpoint addresses, SR policies, and network topologies, is a specific form of reconnaissance, which is further discussed in TBD.
+
+###Integrity
+
+Preventing information from being modified is a key property of information security. Other aspects of integrity include authentication, which is the ability to verify the source of information, and authorization, which enforces different permission policies to different users or sources. In the context of SRv6, compromising the integrity may result in packets being routed in different paths than they were intended to be routed through, which may have various implications, as further discussed in TBD.
+
+###Availability
+
+Protecting the availability of a system means keeping the system running continuously without disruptions. The availability aspects of SRv6 include the ability of attackers to leverage SRv6 as a means for compromising the performance of a network or for causing Denial of Service (DoS). 
+
+##Threat Abstractions
+
+A security attack is implemented by performing a set of one or more basic operations. These basic operations (abstractions) are as follows:
+
+- Passive listening: an attacker who reads packets off the network can collect information about SR endpoint addresses, SR policies and the network topology. This information can then be used to deploy other types of attacks. 
+- Packet replaying: in a replay attack the attacker records one or more packets and transmits them at a later point in time.
+- Packet insertion: an attacker generates and injects a packet to the network. The generated packet may be maliciously crafted to include false information, including for example false addresses and SRv6-related information. 
+- Packet deletion: by intercepting and removing packets from the network, an attacker prevents these packets from reaching their destination. Selective removal of packets may, in some cases, cause more severe damage than random packet loss.
+- Packet modification: the attacker modifies packets during transit. 
+
+##Threat Taxonomy
+
+The threat terminology used in this document is based on {{RFC3552}}. Threats are classified according to two main criteria: internal vs. external attackers, and on-path vs. off-path attackers, as discussed in {{RFC9055}}.
+
+Internal vs. External:
+: An internal attacker in the context of SRv6 is an attacker who is located within an SR domain. Specifically, an internal attacker either has access to a node in the SR domain, or is located on an internal path between two nodes in the SR domain. In this context, the latter means that the attacker can be reached from a node in the SR domain without traversing an SR egress node, and can reach a node in the SR domain without traversing an SR ingress node. External attackers, on the other hand, are not within the SR domain.
+
+On-path vs. Off-path:
+
+: On-path attackers are located in a position that allows interception, modification or dropping of in-flight packets, as well as insertion (generation) of packets. Off-path attackers can only attack by insertion of packets.
+
+
+The following figure depicts the attacker types according to the taxonomy above. As illustrated in the figure, on-path attackers are located along the path of the traffic that is under attack, and therefore can listen, insert, delete, modify or replay packets in transit. Off-path attackers can insert packets, and in some cases can passively listen to some of the traffic, such as multicast transmissions.
+
+~~~~~~~~~~~
+     on-path         on-path        off-path      off-path
+     external        internal       internal      external
+     attacker        attacker       attacker      attacker
+       |                   |        |__            |
+       |     SR      __    | __   _/|  \           |
+       |     domain /  \_/ |   \_/  v   \__        v
+       |            \      |        X      \       X
+       v            /      v                \   
+ ----->X---------->O------>X------->O------->O---->
+                   ^\               ^       /^
+                   | \___/\_    /\_ | _/\__/ |   
+                   |        \__/    |        |     
+                   |                |        |    
+                  SR               SR        SR  
+                  ingress        endpoint    egress
+                  node                       node
+~~~~~~~~~~~
+{: #threat-figure title="Threat Model Taxonomy"}
+ 
+It should be noted that in some threat models the distinction between internal and external attackers depends on whether an attacker has access to a trusted or secured (encrypted or authenticated) domain. The current model defines the SR domain as the boundary that distinguishes internal from external threats, and does not make an assumption about whether the SR domain is secured or not. However, it can be assumed that the SR domain defines a trusted domain with respect to SRv6, and thus that external attackers are outside of this trusted domain.
 
 # Security Considerations in Operational SRv6 Enabled Networks
 {{RFC9256}} {{RFC8986}}
@@ -91,8 +151,9 @@ Segment routing over an IPv6 data plane (SRv6).
 SRv6 packets rely on the routing header in order to steer traffic that adheres to a defined SRv6 traffic policy. This mechanism supports not only use of the IPv6 routing header for packet steering, it also allows for encapsulation of both IPv4 and IPv6 packets.
 
 IPv6 routing header
-~~~~~~~~~~
- 0                   1                   2                   3
+
+~~~~~~~~~~~
+     0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     | Next Header   |  Hdr Ext Len  | Routing Type  | Segments Left |
@@ -115,7 +176,7 @@ IPv6 routing header
     |                                                               |
     |                                                               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~~~~~~~~
+~~~~~~~~~~~
 
 ### Default allow failure mode
 Use of GUA addressing in data plane programming could result in an fail open scenario when appropriate border filtering is not implemented or supported.
