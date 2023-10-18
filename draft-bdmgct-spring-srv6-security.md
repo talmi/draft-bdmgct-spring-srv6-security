@@ -93,17 +93,17 @@ Preventing information from being modified is a key property of information secu
 
 ###Availability
 
-Protecting the availability of a system means keeping the system running continuously without disruptions. The availability aspects of SRv6 include the ability of attackers to leverage SRv6 as a means for compromising the performance of a network or for causing Denial of Service (DoS). 
+Protecting the availability of a system means keeping the system running continuously without disruptions. The availability aspects of SRv6 include the ability of attackers to leverage SRv6 as a means for compromising the performance of a network or for causing Denial of Service (DoS).
 
 ##Threat Abstractions
 
 A security attack is implemented by performing a set of one or more basic operations. These basic operations (abstractions) are as follows:
 
-- Passive listening: an attacker who reads packets off the network can collect information about SR endpoint addresses, SR policies and the network topology. This information can then be used to deploy other types of attacks. 
+- Passive listening: an attacker who reads packets off the network can collect information about SR endpoint addresses, SR policies and the network topology. This information can then be used to deploy other types of attacks.
 - Packet replaying: in a replay attack the attacker records one or more packets and transmits them at a later point in time.
-- Packet insertion: an attacker generates and injects a packet to the network. The generated packet may be maliciously crafted to include false information, including for example false addresses and SRv6-related information. 
+- Packet insertion: an attacker generates and injects a packet to the network. The generated packet may be maliciously crafted to include false information, including for example false addresses and SRv6-related information.
 - Packet deletion: by intercepting and removing packets from the network, an attacker prevents these packets from reaching their destination. Selective removal of packets may, in some cases, cause more severe damage than random packet loss.
-- Packet modification: the attacker modifies packets during transit. 
+- Packet modification: the attacker modifies packets during transit.
 
 ##Threat Taxonomy
 
@@ -127,18 +127,18 @@ The following figure depicts the attacker types according to the taxonomy above.
        |     SR      __    | __   _/|  \           |
        |     domain /  \_/ |   \_/  v   \__        v
        |            \      |        X      \       X
-       v            /      v                \   
+       v            /      v                \
  ----->X---------->O------>X------->O------->O---->
                    ^\               ^       /^
-                   | \___/\_    /\_ | _/\__/ |   
-                   |        \__/    |        |     
-                   |                |        |    
-                  SR               SR        SR  
+                   | \___/\_    /\_ | _/\__/ |
+                   |        \__/    |        |
+                   |                |        |
+                  SR               SR        SR
                   ingress        endpoint    egress
                   node                       node
 ~~~~~~~~~~~
 {: #threat-figure title="Threat Model Taxonomy"}
- 
+
 It should be noted that in some threat models the distinction between internal and external attackers depends on whether an attacker has access to a trusted or secured (encrypted or authenticated) domain. The current model defines the SR domain as the boundary that distinguishes internal from external threats, and does not make an assumption about whether the SR domain is secured or not. However, it can be assumed that the SR domain defines a trusted domain with respect to SRv6, and thus that external attackers are outside of this trusted domain.
 
 # Security Considerations in Operational SRv6 Enabled Networks
