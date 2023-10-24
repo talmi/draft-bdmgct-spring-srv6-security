@@ -183,6 +183,35 @@ Use of GUA addressing in data plane programming could result in an fail open sce
 
 ## Segment Routing Header
 {{RFC8754}}
+SRv6 routing header
+
+~~~~~~~~~~~
+     0                   1                   2                   3
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    | Next Header   |  Hdr Ext Len  | Routing Type  | Segments Left |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |  Last Entry   |     Flags     |              Tag              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    |            Segment List[0] (128 bits IPv6 address)            |
+    |                                                               |
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    |                                                               |
+                                  ...
+    |                                                               |
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    |            Segment List[n] (128 bits IPv6 address)            |
+    |                                                               |
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~~~~~~~~~
+
+The attacks can be lunched by constructing segment lists to define any traffic forwarding path. For example, change the tail SID in SL to forward traffic to unexpected destinations; delete the SID in SL to prevent packets from being processed, such as bypassing the billing service and security detection; add the SID in SL to get various unauthorized services, such as traffic acceleration.
 
 ## Source Routing
 {{RFC7855}}
@@ -218,6 +247,8 @@ This seems like a non-issue from a WAN perspective. Needs more thought - could b
 ## Exposure of internal Traffic Engineering paths
 
 Existing implementations may contain limited filtering capabilities necessary for proper isolation of the SRH from outside of an SRv6 domain.
+
+## Implications on Security Devices
 
 ## Emerging technology growing pains
 
