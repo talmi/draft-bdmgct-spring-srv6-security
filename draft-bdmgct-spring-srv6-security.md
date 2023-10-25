@@ -211,7 +211,12 @@ SRv6 routing header
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~
 
-The attacks can be lunched by constructing segment lists to define any traffic forwarding path. For example, change the tail SID in SL to forward traffic to unexpected destinations; delete the SID in SL to prevent packets from being processed, such as bypassing the billing service and security detection; add the SID in SL to get various unauthorized services, such as traffic acceleration.
+
+The attacks can be lunched by constructing segment lists to define any traffic forwarding path. For example:
+Attackers change the tail SID in Segment List to forward traffic to unexpected destinations; 
+Attackers delete the SID in Segment List to prevent packets from being processed, such as bypassing the billing service and security detection; 
+Attackers add the SID in Segment List to get various unauthorized services, such as traffic acceleration;
+Broadband DoS/DDoS attacks:The attacks can be launched by constructing segment lists，such as inserting duplicate SRv6 address into segment lists,to make packets be forwarded repeatedly between two or more routers or hosts on specific links.[RFC5095].Typically, the Segment List length of SRH is limited, but when SRv6 head compression technology is used, the number of package compression SIDs in SRH increases, and the amplification effect of traffic is more obvious.
 
 ## Source Routing
 {{RFC7855}}
@@ -244,11 +249,20 @@ This seems like a non-issue from a WAN perspective. Needs more thought - could b
 
 ## Limits in filtering capabilities
 
+
 ## Exposure of internal Traffic Engineering paths
 
 Existing implementations may contain limited filtering capabilities necessary for proper isolation of the SRH from outside of an SRv6 domain.
 
 ## Implications on Security Devices
+SRv6 is commonly used as a tunneling technology in operator networks.To provide VPN service in an SRv6 network, the ingress PE encapsulates the payload with an outer IPv6 header with the SRH carrying the SR Policy segment List along with the VPN service SID.The user traffic towards SRv6 provider backbone will be encapsulated in SRv6 tunnel. When constructing an SRv6 packet, the destination address field of the SRv6 packet changes constantly and the source address field of the SRv6 packet is usually assigned using loopback address (depending on configuration),which will affect the security equipments of the current network.
+
+### Hidden Destination Address
+When an SRv6 packet is forwarded in the SRv6 domain, its destination address changes constantly, the real destination address is hidden. Security devices on SRv6 network may not learn the real destination address and fail to take access control on some SRv6 traffic.
+
+### Improper Traffic Filtering
+The security devices on SRv6 networks need to take care of SRv6 packets. However, the SRv6 packets usually use loopback address of the PE device a as source address. As a result, the address information of SR packets may be asymmetric, resulting in improper filter traffic problems, which affects the effectiveness of security devices.
+For example, along the forwarding path in SRv6 network, the SR-aware firewall will check the association relationships of the bidirectional VPN traffic packets. And it is able to retrieve the final destination of SRv6 packet from the last entry in the SRH. When the <source, destination> tuple of the packet from PE1 to PE2 is <PE1-IP-ADDR, PE2-VPN-SID>, and the other direction is <PE2-IP-ADDR, PE1-VPN-SID>, the source address and destination address of the forward and backward VPN traffic are regarded as different flow. Eventually, the legal traffic may be blocked by the firewall.
 
 ## Emerging technology growing pains
 
