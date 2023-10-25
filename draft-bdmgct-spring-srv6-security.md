@@ -220,12 +220,20 @@ Broadband DoS/DDoS attacks:The attacks can be launched by constructing segment l
 
 ## Source Routing
 {{RFC7855}}
+In SRv6 network, each network element along the message forwarding path has the opportunity to tamper with the SRv6 segment list. 
 
 ### Source Routing at source host
-
 Unlike SR-MPLS, SRv6 has a significantly more approachable host implementation.
+Compared with SR-MPLS, SRv6 is easier to implement on the host side, and the threats are as follows:
+1) The attacker generates SRv6 message by obtaining and stealing the identity and real SRH of real users to use unauthorized services.
+2) In the process of transmitting SRv6 message from the user host to the operator network, SRH has also been tampered with, including interception/modification/falsification/abuse.
 
 ### Source Routing from PCC at network ingress
+Typically, the network operator joins the source routing at the header node of the SRv6 domain, and the source routing may also be tampered with by SRH in the SRv6 management domain.
+
+### Source routing across network management domains
+SRv6 is now typically deployed in only one network management domain and may be deployed in different network domains in the future. In particular, the network elements and threats that have really tampered with the list may be in different network management domains in Operational SRv6 Enabled Networks, causing threats that are difficult to trace.
+As shown in the figure, suppose that when the network element 1 of SRv6 management domain 1 has tampered with the segment list, but the threat takes effect at SRv6 management domain 2. At this time, the threat generation and effective place are in different network management domains, and the management domain 2 cannot be traced back to the location where the tampering occurred.
 
 ## Locator Block
 
