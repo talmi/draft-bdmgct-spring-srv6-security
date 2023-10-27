@@ -1,7 +1,7 @@
 ---
 title: "SRv6 Security Considerations"
 abbrev: "SRv6 Security Considerations"
-category: std
+category: info
 
 docname: draft-bdmgct-spring-srv6-security-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
@@ -107,7 +107,7 @@ This section introduces the threat model that is used in this document. The mode
 
 ## Security Components
 
-The main components of information security are confidentiality, integrity and availablity, often referred to by the acronym CIA. A short description of each of these components is presented below in the context of SRv6 security.
+The main components of information security are confidentiality, integrity and availability, often referred to by the acronym CIA. A short description of each of these components is presented below in the context of SRv6 security.
 
 ### Confidentiality
 
@@ -141,7 +141,6 @@ Internal vs. External:
 On-path vs. Off-path:
 
 : On-path attackers are located in a position that allows interception, modification or dropping of in-flight packets, as well as insertion (generation) of packets. Off-path attackers can only attack by insertion of packets.
-
 
 The following figure depicts the attacker types according to the taxonomy above. As illustrated in the figure, on-path attackers are located along the path of the traffic that is under attack, and therefore can listen, insert, delete, modify or replay packets in transit. Off-path attackers can insert packets, and in some cases can passively listen to some of the traffic, such as multicast transmissions.
 

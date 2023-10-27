@@ -4,7 +4,7 @@
 
 Source Packet Routing in Networking                          N. Buraglio
 Internet-Draft                                   Energy Sciences Network
-Intended status: Standards Track                              T. Mizrahi
+Intended status: Informational                                T. Mizrahi
 Expires: 29 April 2024                                            Huawei
                                                                  T. Tong
                                                             China Unicom
@@ -175,7 +175,7 @@ Table of Contents
 3.1.  Security Components
 
    The main components of information security are confidentiality,
-   integrity and availablity, often referred to by the acronym CIA.  A
+   integrity and availability, often referred to by the acronym CIA.  A
    short description of each of these components is presented below in
    the context of SRv6 security.
 
