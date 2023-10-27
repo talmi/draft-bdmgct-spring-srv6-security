@@ -32,6 +32,11 @@ author:
     name: Tal Mizrahi
     org: Huawei
     email: tal.mizrahi.phd@gmail.com
+ -
+    ins: T. Tong
+    name: Tian Tong
+    org: China Unicom
+    email: tongt5@chinaunicom.cn
 
 normative:
   RFC2119:
@@ -46,13 +51,19 @@ informative:
   RFC7384:
   RFC8986:
   RFC7855:
+  RFC5095:
+  RFC8402:
+  RFC4301:
+  RFC4302:
+  RFC4303:
+  RFC4942:
   IANAIPv6SPAR:
     target: https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
     title: "IANA IPv6 Special-Purpose Address Registry"
 
 --- abstract
 
-SRv6 is a traffic engineering, encapsulation, and steering mechanism itilizing IPv6 addresses to identify segments in a pre-defined policy. While SRv6 uses what appear to be typical IPv6 addresses, the address space is treated differently, and in most (all?) cases.
+SRv6 is a traffic engineering, encapsulation, and steering mechanism utilizing IPv6 addresses to identify segments in a pre-defined policy. While SRv6 uses what appear to be typical IPv6 addresses, the address space is treated differently, and in most (all?) cases.
 
 A typical IPv6 unicast address is comprised of a network prefix, host identifier, and a subnet mask. A typical SRv6 segment identifier (SID) is broken into a locator, a function identifier, and optionally, function arguments. The locator must be routable, which enables both SRv6 capable and incapable devices to participate in forwarding, either as normal IPv6 unicast or SRv6. The capability to operate in environments that may have gaps in SRv6 support allows the bridging of islands of SRv6 devices with standard IPv6 unicast routing.
 
@@ -62,7 +73,22 @@ As standard IPv6 addressing, there are security considerations that should be we
 
 # Introduction
 
-TODO Introduction
+Segment Routing (SR) [RFC8402] utilizing an IPv6 data plane is a source routing model that leverages an IPv6 underlay
+and an IPv6 extension header called the Segment Routing Header (SRH) to signal and control the forwarding and path of packets by imposing an ordered list of
+path details that are processed at each hop along the signaled path. Because SRv6 is fundamentally bound to the IPv6 protocol, and because of the reliance of a
+new header there are security considerations which must be noted or addressed in order to operate an SRv6 network in a reliable and secure manner.
+
+   *  SRv6 makes use of the SRH which is a new type of Routing Extension
+      Header.  Therefore, the security properties of the Routing
+      Extension Header are addressed by the SRH.  See [RFC5095] and
+      [RFC8754] for details.
+
+   *  SRv6 consists of using the SRH on the IPv6 dataplane which
+      security properties can be understood based on previous work
+      [RFC4301], [RFC4302], [RFC4303] and [RFC4942].
+
+   This document describes various threats to SRv6 networks and also
+   presents existing approaches to avoid or mitigate the threats.
 
 # Conventions and Definitions
 
@@ -79,23 +105,23 @@ SRH
 
 This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model {{RFC3552}}, as well as some concepts from {{RFC9055}} and {{RFC7384}}.
 
-##Security Components
+## Security Components
 
-The main components of information security are confidentiality, integrity and availablitlity, often referred to by the acronym CIA. A short description of each of these components is presented below in the context of SRv6 security.
+The main components of information security are confidentiality, integrity and availablity, often referred to by the acronym CIA. A short description of each of these components is presented below in the context of SRv6 security.
 
-###Confidentiality
+### Confidentiality
 
 The purpose of confidentiality is to protect the user data from being exposed to unauthorized users, i.e., preventing attackers from eavesdropping to user data. The confidentiality of user data is outside the scope of this document. However, confidentiality aspects of SRv6-related information are within the scope; collecting information about SR endpoint addresses, SR policies, and network topologies, is a specific form of reconnaissance, which is further discussed in TBD.
 
-###Integrity
+### Integrity
 
 Preventing information from being modified is a key property of information security. Other aspects of integrity include authentication, which is the ability to verify the source of information, and authorization, which enforces different permission policies to different users or sources. In the context of SRv6, compromising the integrity may result in packets being routed in different paths than they were intended to be routed through, which may have various implications, as further discussed in TBD.
 
-###Availability
+### Availability
 
 Protecting the availability of a system means keeping the system running continuously without disruptions. The availability aspects of SRv6 include the ability of attackers to leverage SRv6 as a means for compromising the performance of a network or for causing Denial of Service (DoS).
 
-##Threat Abstractions
+## Threat Abstractions
 
 A security attack is implemented by performing a set of one or more basic operations. These basic operations (abstractions) are as follows:
 
@@ -105,7 +131,7 @@ A security attack is implemented by performing a set of one or more basic operat
 - Packet deletion: by intercepting and removing packets from the network, an attacker prevents these packets from reaching their destination. Selective removal of packets may, in some cases, cause more severe damage than random packet loss.
 - Packet modification: the attacker modifies packets during transit.
 
-##Threat Taxonomy
+## Threat Taxonomy
 
 The threat terminology used in this document is based on {{RFC3552}}. Threats are classified according to two main criteria: internal vs. external attackers, and on-path vs. off-path attackers, as discussed in {{RFC9055}}.
 
@@ -211,16 +237,15 @@ SRv6 routing header
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~
 
-
 The attacks can be lunched by constructing segment lists to define any traffic forwarding path. For example:
-Attackers change the tail SID in Segment List to forward traffic to unexpected destinations; 
-Attackers delete the SID in Segment List to prevent packets from being processed, such as bypassing the billing service and security detection; 
+Attackers change the tail SID in Segment List to forward traffic to unexpected destinations;
+Attackers delete the SID in Segment List to prevent packets from being processed, such as bypassing the billing service and security detection;
 Attackers add the SID in Segment List to get various unauthorized services, such as traffic acceleration;
-Broadband DoS/DDoS attacks:The attacks can be launched by constructing segment lists，such as inserting duplicate SRv6 address into segment lists,to make packets be forwarded repeatedly between two or more routers or hosts on specific links.[RFC5095].Typically, the Segment List length of SRH is limited, but when SRv6 head compression technology is used, the number of package compression SIDs in SRH increases, and the amplification effect of traffic is more obvious.
+Broadband DoS/DDoS attacks:The attacks can be launched by constructing segment lists，such as inserting duplicate SRv6 address into segment lists,to make packets be forwarded repeatedly between two or more routers or hosts on specific links.{{RFC5095}}.Typically, the Segment List length of SRH is limited, but when SRv6 head compression technology is used, the number of package compression SIDs in SRH increases, and the amplification effect of traffic is more obvious.
 
 ## Source Routing
 {{RFC7855}}
-In SRv6 network, each network element along the message forwarding path has the opportunity to tamper with the SRv6 segment list. 
+In SRv6 network, each network element along the message forwarding path has the opportunity to tamper with the SRv6 segment list.
 
 ### Source Routing at source host
 Unlike SR-MPLS, SRv6 has a significantly more approachable host implementation.

@@ -5,8 +5,10 @@
 Source Packet Routing in Networking                          N. Buraglio
 Internet-Draft                                   Energy Sciences Network
 Intended status: Standards Track                              T. Mizrahi
-Expires: 20 April 2024                                            Huawei
-                                                         18 October 2023
+Expires: 29 April 2024                                            Huawei
+                                                                 T. Tong
+                                                            China Unicom
+                                                         27 October 2023
 
 
                       SRv6 Security Considerations
@@ -15,7 +17,7 @@ Expires: 20 April 2024                                            Huawei
 Abstract
 
    SRv6 is a traffic engineering, encapsulation, and steering mechanism
-   itilizing IPv6 addresses to identify segments in a pre-defined
+   utilizing IPv6 addresses to identify segments in a pre-defined
    policy.  While SRv6 uses what appear to be typical IPv6 addresses,
    the address space is treated differently, and in most (all?) cases.
 
@@ -65,7 +67,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 April 2024.
+   This Internet-Draft will expire on 29 April 2024.
 
 Copyright Notice
 
@@ -101,6 +103,7 @@ Table of Contents
      4.3.  Source Routing
        4.3.1.  Source Routing at source host
        4.3.2.  Source Routing from PCC at network ingress
+       4.3.3.  Source routing across network management domains
      4.4.  Locator Block
      4.5.  Segment Identifiers
        4.5.1.  SID Compression
@@ -112,7 +115,10 @@ Table of Contents
        4.5.7.  Infrastructure and topology exposure
      4.6.  Limits in filtering capabilities
      4.7.  Exposure of internal Traffic Engineering paths
-     4.8.  Emerging technology growing pains
+     4.8.  Implications on Security Devices
+       4.8.1.  Hidden Destination Address
+       4.8.2.  Improper Traffic Filtering
+     4.9.  Emerging technology growing pains
    5.  Mitigation Methods
    6.  Gap Analysis
    7.  Other considerations
@@ -127,7 +133,27 @@ Table of Contents
 
 1.  Introduction
 
-   TODO Introduction
+   Segment Routing (SR) [RFC8402] utilizing an IPv6 data plane is a
+   source routing model that leverages an IPv6 underlay and an IPv6
+   extension header called the Segment Routing Header (SRH) to signal
+   and control the forwarding and path of packets by imposing an ordered
+   list of path details that are processed at each hop along the
+   signaled path.  Because SRv6 is fundamentally bound to the IPv6
+   protocol, and because of the reliance of a new header there are
+   security considerations which must be noted or addressed in order to
+   operate an SRv6 network in a reliable and secure manner.
+
+   *  SRv6 makes use of the SRH which is a new type of Routing Extension
+      Header.  Therefore, the security properties of the Routing
+      Extension Header are addressed by the SRH.  See [RFC5095] and
+      [RFC8754] for details.
+
+   *  SRv6 consists of using the SRH on the IPv6 dataplane which
+      security properties can be understood based on previous work
+      [RFC4301], [RFC4302], [RFC4303] and [RFC4942].
+
+   This document describes various threats to SRv6 networks and also
+   presents existing approaches to avoid or mitigate the threats.
 
 2.  Conventions and Definitions
 
@@ -149,8 +175,8 @@ Table of Contents
 3.1.  Security Components
 
    The main components of information security are confidentiality,
-   integrity and availablitlity, often referred to by the acronym CIA.
-   A short description of each of these components is presented below in
+   integrity and availablity, often referred to by the acronym CIA.  A
+   short description of each of these components is presented below in
    the context of SRv6 security.
 
 3.1.1.  Confidentiality
@@ -316,18 +342,83 @@ Table of Contents
 
 4.2.  Segment Routing Header
 
-   [RFC8754]
+   [RFC8754] SRv6 routing header
+
+        0                   1                   2                   3
+        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       | Next Header   |  Hdr Ext Len  | Routing Type  | Segments Left |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |  Last Entry   |     Flags     |              Tag              |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |                                                               |
+       |            Segment List[0] (128 bits IPv6 address)            |
+       |                                                               |
+       |                                                               |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |                                                               |
+       |                                                               |
+                                     ...
+       |                                                               |
+       |                                                               |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |                                                               |
+       |            Segment List[n] (128 bits IPv6 address)            |
+       |                                                               |
+       |                                                               |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+   The attacks can be lunched by constructing segment lists to define
+   any traffic forwarding path.  For example: Attackers change the tail
+   SID in Segment List to forward traffic to unexpected destinations;
+   Attackers delete the SID in Segment List to prevent packets from
+   being processed, such as bypassing the billing service and security
+   detection; Attackers add the SID in Segment List to get various
+   unauthorized services, such as traffic acceleration; Broadband DoS/
+   DDoS attacks:The attacks can be launched by constructing segment
+   lists，such as inserting duplicate SRv6 address into segment lists,to
+   make packets be forwarded repeatedly between two or more routers or
+   hosts on specific links.[RFC5095].Typically, the Segment List length
+   of SRH is limited, but when SRv6 head compression technology is used,
+   the number of package compression SIDs in SRH increases, and the
+   amplification effect of traffic is more obvious.
 
 4.3.  Source Routing
 
-   [RFC7855]
+   [RFC7855] In SRv6 network, each network element along the message
+   forwarding path has the opportunity to tamper with the SRv6 segment
+   list.
 
 4.3.1.  Source Routing at source host
 
    Unlike SR-MPLS, SRv6 has a significantly more approachable host
-   implementation.
+   implementation.  Compared with SR-MPLS, SRv6 is easier to implement
+   on the host side, and the threats are as follows: 1) The attacker
+   generates SRv6 message by obtaining and stealing the identity and
+   real SRH of real users to use unauthorized services. 2) In the
+   process of transmitting SRv6 message from the user host to the
+   operator network, SRH has also been tampered with, including
+   interception/modification/falsification/abuse.
 
 4.3.2.  Source Routing from PCC at network ingress
+
+   Typically, the network operator joins the source routing at the
+   header node of the SRv6 domain, and the source routing may also be
+   tampered with by SRH in the SRv6 management domain.
+
+4.3.3.  Source routing across network management domains
+
+   SRv6 is now typically deployed in only one network management domain
+   and may be deployed in different network domains in the future.  In
+   particular, the network elements and threats that have really
+   tampered with the list may be in different network management domains
+   in Operational SRv6 Enabled Networks, causing threats that are
+   difficult to trace.  As shown in the figure, suppose that when the
+   network element 1 of SRv6 management domain 1 has tampered with the
+   segment list, but the threat takes effect at SRv6 management domain
+   2.  At this time, the threat generation and effective place are in
+   different network management domains, and the management domain 2
+   cannot be traced back to the location where the tampering occurred.
 
 4.4.  Locator Block
 
@@ -359,7 +450,44 @@ Table of Contents
    necessary for proper isolation of the SRH from outside of an SRv6
    domain.
 
-4.8.  Emerging technology growing pains
+4.8.  Implications on Security Devices
+
+   SRv6 is commonly used as a tunneling technology in operator
+   networks.To provide VPN service in an SRv6 network, the ingress PE
+   encapsulates the payload with an outer IPv6 header with the SRH
+   carrying the SR Policy segment List along with the VPN service
+   SID.The user traffic towards SRv6 provider backbone will be
+   encapsulated in SRv6 tunnel.  When constructing an SRv6 packet, the
+   destination address field of the SRv6 packet changes constantly and
+   the source address field of the SRv6 packet is usually assigned using
+   loopback address (depending on configuration),which will affect the
+   security equipments of the current network.
+
+4.8.1.  Hidden Destination Address
+
+   When an SRv6 packet is forwarded in the SRv6 domain, its destination
+   address changes constantly, the real destination address is hidden.
+   Security devices on SRv6 network may not learn the real destination
+   address and fail to take access control on some SRv6 traffic.
+
+4.8.2.  Improper Traffic Filtering
+
+   The security devices on SRv6 networks need to take care of SRv6
+   packets.  However, the SRv6 packets usually use loopback address of
+   the PE device a as source address.  As a result, the address
+   information of SR packets may be asymmetric, resulting in improper
+   filter traffic problems, which affects the effectiveness of security
+   devices.  For example, along the forwarding path in SRv6 network, the
+   SR-aware firewall will check the association relationships of the
+   bidirectional VPN traffic packets.  And it is able to retrieve the
+   final destination of SRv6 packet from the last entry in the SRH.
+   When the <source, destination> tuple of the packet from PE1 to PE2 is
+   <PE1-IP-ADDR, PE2-VPN-SID>, and the other direction is <PE2-IP-ADDR,
+   PE1-VPN-SID>, the source address and destination address of the
+   forward and backward VPN traffic are regarded as different flow.
+   Eventually, the legal traffic may be blocked by the firewall.
+
+4.9.  Emerging technology growing pains
 
 5.  Mitigation Methods
 
@@ -411,6 +539,28 @@ Table of Contents
               DOI 10.17487/RFC3552, July 2003,
               <https://www.rfc-editor.org/rfc/rfc3552>.
 
+   [RFC4301]  Kent, S. and K. Seo, "Security Architecture for the
+              Internet Protocol", RFC 4301, DOI 10.17487/RFC4301,
+              December 2005, <https://www.rfc-editor.org/rfc/rfc4301>.
+
+   [RFC4302]  Kent, S., "IP Authentication Header", RFC 4302,
+              DOI 10.17487/RFC4302, December 2005,
+              <https://www.rfc-editor.org/rfc/rfc4302>.
+
+   [RFC4303]  Kent, S., "IP Encapsulating Security Payload (ESP)",
+              RFC 4303, DOI 10.17487/RFC4303, December 2005,
+              <https://www.rfc-editor.org/rfc/rfc4303>.
+
+   [RFC4942]  Davies, E., Krishnan, S., and P. Savola, "IPv6 Transition/
+              Co-existence Security Considerations", RFC 4942,
+              DOI 10.17487/RFC4942, September 2007,
+              <https://www.rfc-editor.org/rfc/rfc4942>.
+
+   [RFC5095]  Abley, J., Savola, P., and G. Neville-Neil, "Deprecation
+              of Type 0 Routing Headers in IPv6", RFC 5095,
+              DOI 10.17487/RFC5095, December 2007,
+              <https://www.rfc-editor.org/rfc/rfc5095>.
+
    [RFC7384]  Mizrahi, T., "Security Requirements of Time Protocols in
               Packet Switched Networks", RFC 7384, DOI 10.17487/RFC7384,
               October 2014, <https://www.rfc-editor.org/rfc/rfc7384>.
@@ -425,6 +575,11 @@ Table of Contents
               (IPv6) Specification", STD 86, RFC 8200,
               DOI 10.17487/RFC8200, July 2017,
               <https://www.rfc-editor.org/rfc/rfc8200>.
+
+   [RFC8402]  Filsfils, C., Ed., Previdi, S., Ed., Ginsberg, L.,
+              Decraene, B., Litkowski, S., and R. Shakir, "Segment
+              Routing Architecture", RFC 8402, DOI 10.17487/RFC8402,
+              July 2018, <https://www.rfc-editor.org/rfc/rfc8402>.
 
    [RFC8754]  Filsfils, C., Ed., Dukes, D., Ed., Previdi, S., Leddy, J.,
               Matsushima, S., and D. Voyer, "IPv6 Segment Routing Header
@@ -461,3 +616,8 @@ Authors' Addresses
    Tal Mizrahi
    Huawei
    Email: tal.mizrahi.phd@gmail.com
+
+
+   Tian Tong
+   China Unicom
+   Email: tongt5@chinaunicom.cn
