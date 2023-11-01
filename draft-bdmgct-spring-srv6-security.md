@@ -1,7 +1,7 @@
 ---
 title: "SRv6 Security Considerations"
 abbrev: "SRv6 Security Considerations"
-category: info
+category: std
 
 docname: draft-bdmgct-spring-srv6-security-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
