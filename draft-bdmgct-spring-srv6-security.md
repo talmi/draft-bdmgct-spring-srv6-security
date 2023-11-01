@@ -2,6 +2,7 @@
 title: "SRv6 Security Considerations"
 abbrev: "SRv6 Security Considerations"
 category: std
+pi: [toc, sortrefs, symrefs]
 
 docname: draft-bdmgct-spring-srv6-security-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
@@ -103,7 +104,7 @@ SRH
 
 # Threat Model
 
-This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model {{RFC3552}}, as well as some concepts from {{RFC9055}} and {{RFC7384}}.
+This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model {{RFC3552}}, as well as some concepts from {{RFC9055}} and {{RFC7384}}. Details regarding inter-domain segment routing (SR) are out of scope for this document.
 
 ## Security Components
 
