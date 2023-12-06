@@ -45,8 +45,6 @@ normative:
 informative:
   RFC8754:
   RFC9256:
-  RFC8754:
-  RFC8200:
   RFC3552:
   RFC9055:
   RFC7384:
@@ -58,6 +56,9 @@ informative:
   RFC4302:
   RFC4303:
   RFC4942:
+  RFC9288:
+  RFC9099:
+  RFC6169:
   IANAIPv6SPAR:
     target: https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
     title: "IANA IPv6 Special-Purpose Address Registry"
@@ -104,7 +105,7 @@ SRH
 
 # Threat Model
 
-This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model {{RFC3552}}, as well as some concepts from {{RFC9055}} and {{RFC7384}}. Details regarding inter-domain segment routing (SR) are out of scope for this document.
+This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model [RFC3552], as well as some concepts from [RFC9055] and [RFC7384]. Details regarding inter-domain segment routing (SR) are out of scope for this document.
 
 ## Security Components
 
@@ -134,7 +135,7 @@ A security attack is implemented by performing a set of one or more basic operat
 
 ## Threat Taxonomy
 
-The threat terminology used in this document is based on {{RFC3552}}. Threats are classified according to two main criteria: internal vs. external attackers, and on-path vs. off-path attackers, as discussed in {{RFC9055}}.
+The threat terminology used in this document is based on [RFC3552]. Threats are classified according to two main criteria: internal vs. external attackers, and on-path vs. off-path attackers, as discussed in [RFC9055].
 
 Internal vs. External:
 : An internal attacker in the context of SRv6 is an attacker who is located within an SR domain. Specifically, an internal attacker either has access to a node in the SR domain, or is located on an internal path between two nodes in the SR domain. In this context, the latter means that the attacker can be reached from a node in the SR domain without traversing an SR egress node, and can reach a node in the SR domain without traversing an SR ingress node. External attackers, on the other hand, are not within the SR domain.
@@ -168,7 +169,7 @@ The following figure depicts the attacker types according to the taxonomy above.
 It should be noted that in some threat models the distinction between internal and external attackers depends on whether an attacker has access to a trusted or secured (encrypted or authenticated) domain. The current model defines the SR domain as the boundary that distinguishes internal from external threats, and does not make an assumption about whether the SR domain is secured or not. However, it can be assumed that the SR domain defines a trusted domain with respect to SRv6, and thus that external attackers are outside of this trusted domain.
 
 # Security Considerations in Operational SRv6 Enabled Networks
-{{RFC9256}} {{RFC8986}}
+[RFC9256] [RFC8986]
 
 ## Encapsulation of packets
 
@@ -208,7 +209,7 @@ IPv6 routing header
 Use of GUA addressing in data plane programming could result in an fail open scenario when appropriate border filtering is not implemented or supported.
 
 ## Segment Routing Header
-{{RFC8754}}
+[RFC8754]
 SRv6 routing header
 
 ~~~~~~~~~~~
@@ -244,7 +245,7 @@ Attackers add the SID in Segment List to get various unauthorized services, such
 Broadband DoS/DDoS attacks:The attacks can be launched by constructing segment lists，such as inserting duplicate SRv6 address into segment lists,to make packets be forwarded repeatedly between two or more routers or hosts on specific links.{{RFC5095}}.Typically, the Segment List length of SRH is limited, but when SRv6 head compression technology is used, the number of package compression SIDs in SRH increases, and the amplification effect of traffic is more obvious.
 
 ## Source Routing
-{{RFC7855}}
+[RFC7855]
 In SRv6 network, each network element along the message forwarding path has the opportunity to tamper with the SRv6 segment list.
 
 ### Source Routing at source host
@@ -282,13 +283,12 @@ This seems like a non-issue from a WAN perspective. Needs more thought - could b
 
 ## Limits in filtering capabilities
 
+{{RFC9288}} provides recommendations on the filtering of IPv6 packets containing IPv6 extension headers at transit routers. SRv6 relies on the routing header (RH4). Because the technology is reasonably new, many platforms, routing and otherwise, do not posses the capability to filter and in some cases even provide logging for IPv6 next-header 43 Routing type 4.
+
 
 ## Exposure of internal Traffic Engineering paths
 
 Existing implementations may contain limited filtering capabilities necessary for proper isolation of the SRH from outside of an SRv6 domain.
-
-## Implications on Security Devices
-SRv6 is commonly used as a tunneling technology in operator networks.To provide VPN service in an SRv6 network, the ingress PE encapsulates the payload with an outer IPv6 header with the SRH carrying the SR Policy segment List along with the VPN service SID.The user traffic towards SRv6 provider backbone will be encapsulated in SRv6 tunnel. When constructing an SRv6 packet, the destination address field of the SRv6 packet changes constantly and the source address field of the SRv6 packet is usually assigned using loopback address (depending on configuration),which will affect the security equipments of the current network.
 
 ### Hidden Destination Address
 When an SRv6 packet is forwarded in the SRv6 domain, its destination address changes constantly, the real destination address is hidden. Security devices on SRv6 network may not learn the real destination address and fail to take access control on some SRv6 traffic.
@@ -296,6 +296,10 @@ When an SRv6 packet is forwarded in the SRv6 domain, its destination address cha
 ### Improper Traffic Filtering
 The security devices on SRv6 networks need to take care of SRv6 packets. However, the SRv6 packets usually use loopback address of the PE device a as source address. As a result, the address information of SR packets may be asymmetric, resulting in improper filter traffic problems, which affects the effectiveness of security devices.
 For example, along the forwarding path in SRv6 network, the SR-aware firewall will check the association relationships of the bidirectional VPN traffic packets. And it is able to retrieve the final destination of SRv6 packet from the last entry in the SRH. When the <source, destination> tuple of the packet from PE1 to PE2 is <PE1-IP-ADDR, PE2-VPN-SID>, and the other direction is <PE2-IP-ADDR, PE1-VPN-SID>, the source address and destination address of the forward and backward VPN traffic are regarded as different flow. Eventually, the legal traffic may be blocked by the firewall.
+
+# Implications on Security Devices
+SRv6 is commonly used as a tunneling technology in operator networks. To provide VPN service in an SRv6 network, the ingress PE encapsulates the payload with an outer IPv6 header with the SRH carrying the SR Policy segment List along with the VPN service SID. The user traffic towards SRv6 provider backbone will be encapsulated in SRv6 tunnel. When constructing an SRv6 packet, the destination address field of the SRv6 packet changes constantly and the source address field of the SRv6 packet is usually assigned using an address on the originating device, which may be a host or a network element depending on configuration. This may affect the security equipment and middle boxes in the traffic path. Because of the existence of the SRH, and the additional headers, older security appliances, monitoring systems, and middle boxes cold react in different ways if they are unaware of the additional header and tunneling mechanisms leveraged by SRv6. This lack of awareness may be due to software limits, or in some cases as has been seen in other emerging technologies, may be due to limits in ASICs or NPUs that could silently drop or otherwise impede SRv6 packets.
+[RFC6169]
 
 ## Emerging technology growing pains
 
@@ -311,7 +315,8 @@ This section analyzes the security related gaps with respect to the threats and 
 
 ## Existing IPv6 Vulnerabilities
 
-{{RFC8200}}
+Because SRv6 is completely reliant on IPv6 for addressing, forwarding, and fundamental networking basics, it is potentially subject to any existing or emerging IPv6 vulnerabilities, however, this is out of scope for this document. [RFC9099]
+
 
 # Security Considerations
 
@@ -326,4 +331,4 @@ Example non-RFC link {{IANAIPv6SPAR}}
 # Acknowledgments
 {:numbered="false"}
 
-TODO acknowledge.
+The authors would like to acknowledge the contributions from Dale Carder, Eric Vyncke, Alvaro Retana, Bruno Decraene, and Joel Halpern.
