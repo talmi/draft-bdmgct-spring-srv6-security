@@ -59,6 +59,7 @@ informative:
   RFC9288:
   RFC9099:
   RFC6169:
+  I-D.ietf-spring-srv6-srh-compression:
   IANAIPv6SPAR:
     target: https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
     title: "IANA IPv6 Special-Purpose Address Registry"
@@ -103,7 +104,7 @@ SID
 uSID
 SRH
 
-# Threat Model
+# Threat Model {#threat}
 
 This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model [RFC3552], as well as some concepts from [RFC9055] and [RFC7384]. Details regarding inter-domain segment routing (SR) are out of scope for this document.
 
@@ -167,6 +168,76 @@ The following figure depicts the attacker types according to the taxonomy above.
 {: #threat-figure title="Threat Model Taxonomy"}
 
 It should be noted that in some threat models the distinction between internal and external attackers depends on whether an attacker has access to a trusted or secured (encrypted or authenticated) domain. The current model defines the SR domain as the boundary that distinguishes internal from external threats, and does not make an assumption about whether the SR domain is secured or not. However, it can be assumed that the SR domain defines a trusted domain with respect to SRv6, and thus that external attackers are outside of this trusted domain.
+
+# Attacks
+
+## SR Modification Attack
+
+### Overview
+An attacker can modify a packet while it is in transit in a way that directly affects the packet's SR policy. The modification can affect the destination address of the IPv6 header and/or the SRH. In this context SRH modification may refer to inserting an SRH, removing an SRH, or modifying some of the fields of an existing SRH. 
+
+Modification of an existing SRH can be further classified into several possible attacks. Specifically, the attack can include adding one or more SIDs to the segment list, removing one or more SIDs or replacing some of the SIDs with differnet SIDs. Another possible type of modification is by adding, removing or modifying TLV fields in the SRH.
+
+When an SRH is present modifying the destination address (DA) of the IPv6 header affects the active segment. However, DA modification can affect the SR policy even in the absence of an SRH. One example is modifying a DA which is used as a Binding SID [RFC8402]. Another example is a compressed segment list that is incorporated in the DA without an SRH {{I-D.ietf-spring-srv6-srh-compression}}.
+
+### Scope
+An SR modification attack can be performed by on-path attackers. As discussed in {{threat}}, it assumed that filtering is deployed at the domain boundaries, thus limiting the ability of implementing SR modification attacks to on-path internal attackers. 
+
+### Impact {#mod-impact}
+The SR modification attack allows an attacker to change the SR policy that the packet is steered through and thus to manipulate the path and the processing that the packet is subject to. 
+
+Specifically, the SR modification attack can impact the network and the forwarding behavior of packets in one or more of the following ways:
+
+Avoiding a specific node or path: 
+:An attacker can manipulate the DA and/or SRH in order to avoid a specific node or path. This approach can be used, for example, for bypassing the billing service or avoiding access controls and security filters.
+
+Preferring a specific path:
+: The packet can be manipulated to avert packets to a specific path. This attack can result in allowing various unauthorized services such as traffic acceleration. Alternatively, an attacker can avert traffic to be forwarded through a specific node that the attacker has access to, thus facilitating more complex on-path attacks such as passive listening, recon and various man-in-the-middle attacks. It is noted that the SR modification attack is performed by an on-path attacker who has access to packets in transit, and thus can implement these attacks directly. However, SR modification is relatively easy to implement and requires low processing resources by an attacker, while it facilitates more complex on-path attacks by averting the traffic to another node that the attacker has access to and has more processing resources.
+
+Availability:
+:An attacker can add SIDs to the segment list in order to increase the number hops that each packet is forwarded through and thus increase the load on the network. For example, a set of SIDs can be inserted in a way that creates a forwarding loop ([RFC8402], [RFC5095]) and thus loads the nodes along the loop. Network programming can be used in some cases to manipulate segment endpoints to perform unnecessary functions that consume processing resources. Path inflation, malicious looping and unnecessary instructions have a common outcome, resource exhaustion, which may in severe cases cause Denial of Service (DoS).
+
+## Reconnaissance {#recon}
+
+### Overview
+An on-path attacker can passively listen to packets and specifically to the SRv6-related information that is conveyed in the IPv6 header and the SRH. This approach can be used for collecting information about SIDs and policies, and thus to facilitate mapping the structure of the network and its potential vulnerabilities.
+
+### Scope
+A recon attack is limited to on-path internal attackers.
+
+It is assumed that the SRv6 domain is filtered in a way that prevents any leaks of explicit SRv6 routing information through the boundaries of the administrative domain. External attackers can only collect SRv6-related data in a malfunctioning network in which SRv6-related information is leaked through the boundaries of an SR domain.
+
+### Impact
+While the information collected in a recon attack does not compromise the confidentiality of the user data, it allows an attacker to gather information about the network which in turn can be used to enable other attacks.
+
+## Packet Insertion
+
+### Overview
+In this attack packets are inserted (injected) into the network with a segment list that defines a specific SR policy. The attack can be applied either by using synthetic packets or by replaying previously recorded packets.
+
+### Scope
+Packet insertion can be performed by internal attackers, either on-path or off-path. In the case of a replay attack, recording packets in-flight requires on-path access and the recorded packets can later be injected either from an on-path or an off-path location. 
+
+SRv6 domains are assumed to be filtered in a way that mitigates insertion attacks from external attackers.
+
+### Impact
+The main impact of this attack is resource exhaustion which compromises the availability of the network, as described in {{mod-impact}}.
+
+## Control Plane Attacks
+
+### Overview
+Depending on the control plane protocols used in a network, it is possible to use the control plane as a way of compromising the network. For example, an attacker can advertise SIDs in order to manipulate the SR policies used in the network. A wide range of attacks can be implemented, including injecting control plane messages, selectively removing legitimate messages, replaying them or passively listening to them.
+
+### Scope
+Control plane attacks can be performed by internal attackers. Injection can be performed by off-path attackers, while removal, replaying and listening require on-path access.
+
+It is assumed that SRv6 domain boundary filtering is used for mitigating potential control plane attacks from external attackers. Segment routing does not define any specific security mechanisms in existing control plane protocols. However, existing control plane protocols use authentication and security mechanisms to validate control plane information. 
+
+### Impact
+A compromised control plane can impact the network in various possible ways. SR policies can be manipulated by the attacker to avoid specific paths or to prefer specific paths, as described in {{mod-impact}}. Alternatively, the attacker can compromise the availability, either by defining SR policies that load the network resources, as described in {{mod-impact}}, or by blackholing some or all of the SR policies. A passive attacker can use the control plane messages as a means for recon, in a similar manner to {{mod-impact}}.
+
+## Other Attacks
+Various attacks which are not specific to SRv6 can be used to compromise networks that deploy SRv6. For example, spoofing is not specific to SRv6, but can be used in a network that uses SRv6. Such attacks are outside the scope of this document. 
 
 # Security Considerations in Operational SRv6 Enabled Networks
 [RFC9256] [RFC8986]
