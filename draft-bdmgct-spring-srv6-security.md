@@ -238,12 +238,6 @@ SRv6 routing header
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~
 
-The attacks can be lunched by constructing segment lists to define any traffic forwarding path. For example:
-Attackers change the tail SID in Segment List to forward traffic to unexpected destinations;
-Attackers delete the SID in Segment List to prevent packets from being processed, such as bypassing the billing service and security detection;
-Attackers add the SID in Segment List to get various unauthorized services, such as traffic acceleration;
-Broadband DoS/DDoS attacks:The attacks can be launched by constructing segment lists，such as inserting duplicate SRv6 address into segment lists,to make packets be forwarded repeatedly between two or more routers or hosts on specific links.{{RFC5095}}.Typically, the Segment List length of SRH is limited, but when SRv6 head compression technology is used, the number of package compression SIDs in SRH increases, and the amplification effect of traffic is more obvious.
-
 ## Source Routing
 [RFC7855]
 In SRv6 network, each network element along the message forwarding path has the opportunity to tamper with the SRv6 segment list.
@@ -262,24 +256,6 @@ SRv6 is now typically deployed in only one network management domain and may be 
 As shown in the figure, suppose that when the network element 1 of SRv6 management domain 1 has tampered with the segment list, but the threat takes effect at SRv6 management domain 2. At this time, the threat generation and effective place are in different network management domains, and the management domain 2 cannot be traced back to the location where the tampering occurred.
 
 ## Locator Block
-
-## Segment Identifiers
-
-### SID Compression
-
-### SID spoofing
-
-### Snooping and Packet Capture
-
-### Spoofing
-
-### SID lists (IPv6 addresses)
-
-### Path enumeration
-
-### Infrastructure and topology exposure
-
-This seems like a non-issue from a WAN perspective. Needs more thought - could be problematic in a host to host scenario involving a WAN and/or a data center fabric.
 
 ## Limits in filtering capabilities
 
@@ -332,3 +308,24 @@ Example non-RFC link {{IANAIPv6SPAR}}
 {:numbered="false"}
 
 The authors would like to acknowledge the contributions from Dale Carder, Eric Vyncke, Alvaro Retana, Bruno Decraene, and Joel Halpern.
+
+# Topics for Further Consideration
+
+## Segment Identifiers
+
+### SID Compression
+
+### SID spoofing
+
+### Snooping and Packet Capture
+
+### Spoofing
+
+### SID lists (IPv6 addresses)
+
+### Path enumeration
+
+### Infrastructure and topology exposure
+
+This seems like a non-issue from a WAN perspective. Needs more thought - could be problematic in a host to host scenario involving a WAN and/or a data center fabric.
+
