@@ -166,7 +166,21 @@ The following figure depicts the attacker types according to the taxonomy above.
 ~~~~~~~~~~~
 {: #threat-figure title="Threat Model Taxonomy"}
 
-It should be noted that in some threat models the distinction between internal and external attackers depends on whether an attacker has access to a trusted or secured (encrypted or authenticated) domain. The current model defines the SR domain as the boundary that distinguishes internal from external threats, and does not make an assumption about whether the SR domain is secured or not. However, it can be assumed that the SR domain defines a trusted domain with respect to SRv6, and thus that external attackers are outside of this trusted domain.
+In the current threat model the SR domain defines the boundary that distinguishes internal from external threats. As specified in [RFC8402]:
+
+~~~~~~~~~~~
+   By default, SR operates within a trusted domain.  Traffic MUST be
+   filtered at the domain boundaries.
+   The use of best practices to reduce the risk of tampering within the
+   trusted domain is important.  Such practices are discussed in
+   [RFC4381] and are applicable to both SR-MPLS and SRv6.
+~~~~~~~~~~~
+
+In the context of the current document it is assumed that SRv6 is deployed within a limited domain [RFC8799] with filtering at the domain boundaries, forming a trusted domain with respect to SRv6. Thus, external attackers are outside of the trusted domain. 
+
+Following the spirit of [RFC8402], the current document  mandates a filtering mechanism that eliminates the threats from external attackers. This approach limits the scope of the attacks described in this document to within the domain (i.e., internal attackers).  
+
+It should be noted that in some threat models the distinction between internal and external attackers depends on whether an attacker has access to a cryptographically secured (encrypted or authenticated) domain. Specifically, in some of these models there is a distinction between an attacker who becomes internal by having physical access, for example by plugging into an active port of a network device, and an attacker who has full access to a legitimate network node, including for example encryption keys if the network is encrypted. The current model does not distinguish between these two types of attackers and there is no assumption about whether the SR domain is cryptographically secured or not. 
 
 # Security Considerations in Operational SRv6 Enabled Networks
 [RFC9256] [RFC8986]
