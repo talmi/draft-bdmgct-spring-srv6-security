@@ -44,8 +44,8 @@ normative:
 
 informative:
   RFC8754:
-  RFC9256:
   RFC3552:
+  RFC9256:
   RFC9055:
   RFC7384:
   RFC8986:
@@ -390,20 +390,20 @@ Example non-RFC link {{IANAIPv6SPAR}}
 # Acknowledgments
 {:numbered="false"}
 
-The authors would like to acknowledge the contributions from Dale Carder, Eric Vyncke, Alvaro Retana, Bruno Decraene, and Joel Halpern.
+The authors would like to acknowledge the contributions from Andrew Alston, Dale Carder, Bruno Decraene, Joel Halpern, Alvaro Retana, and Eric Vyncke.
 
 # Topics for Further Consideration
 
-### SRH Compression
+## SRH Compression
 
 Because of the methodologies used in SID compression, SRH compression does not necessarily use an SRH - in practice this means filtering based on the next header is not relevant, thereby removing an important filtering mechanism.
 Under certain specific conditions, a host may generate a SID list that is capable of being compressed into a single destination address (DA). Under these circumstances, the SRH may not be generated or may be removed during the process. In this case, a host may generate a layer 4 checksum that is created after SR policy and SID compression is applied and is done so using a DA that differs from the DA that will arrive at the final destination. This incorrect L4 checksum will cause any device in the path that utilizes a L4 checksum to discard or otherwise flag as erroneous the packets referenced by this checksum. Examples include deep packet inspection hardware that may exist transparently in a path or other higher layer packet inspection mechanisms that require or utilize an L4 checksum. Such behavior could result in blackholed or incorrectly dropped / filtered traffic that is otherwise legitimate.
 
-### Spoofing
+## Spoofing
 
-### Path enumeration
+## Path enumeration
 
-### Infrastructure and topology exposure
+## Infrastructure and topology exposure
 
 This seems like a non-issue from a WAN perspective. Needs more thought - could be problematic in a host to host scenario involving a WAN and/or a data center fabric.
 
