@@ -340,11 +340,9 @@ Typically, the network operator joins the source routing at the header node of t
 SRv6 is now typically deployed in only one network management domain and may be deployed in different network domains in the future. In particular, the network elements and threats that have really tampered with the list may be in different network management domains in Operational SRv6 Enabled Networks, causing threats that are difficult to trace.
 As shown in the figure, suppose that when the network element 1 of SRv6 management domain 1 has tampered with the segment list, but the threat takes effect at SRv6 management domain 2. At this time, the threat generation and effective place are in different network management domains, and the management domain 2 cannot be traced back to the location where the tampering occurred.
 
-## Locator Block
-
 ## Limits in filtering capabilities
 
-{{RFC9288}} provides recommendations on the filtering of IPv6 packets containing IPv6 extension headers at transit routers. SRv6 relies on the routing header (RH4). Because the technology is reasonably new, many platforms, routing and otherwise, do not posses the capability to filter and in some cases even provide logging for IPv6 next-header 43 Routing type 4.
+{{RFC9288}} provides recommendations on the filtering of IPv6 packets containing IPv6 extension headers at transit routers. SRv6 relies on the routing header (RH4). Because the technology is reasonably new, many platforms, routing and otherwise, do not posses the capability to filter and in some cases even provide logging for IPv6 next-header 43 Routing type 4. 
 
 
 ## Exposure of internal Traffic Engineering paths
@@ -396,17 +394,12 @@ The authors would like to acknowledge the contributions from Dale Carder, Eric V
 
 # Topics for Further Consideration
 
-## Segment Identifiers
+### SRH Compression
 
-### SID Compression
-
-### SID spoofing
-
-### Snooping and Packet Capture
+Because of the methodologies used in SID compression, SRH compression does not necessarily use an SRH - in practice this means filtering based on the next header is not relevant, thereby removing an important filtering mechanism.
+Under certain specific conditions, a host may generate a SID list that is capable of being compressed into a single destination address (DA). Under these circumstances, the SRH may not be generated or may be removed during the process. In this case, a host may generate a layer 4 checksum that is created after SR policy and SID compression is applied and is done so using a DA that differs from the DA that will arrive at the final destination. This incorrect L4 checksum will cause any device in the path that utilizes a L4 checksum to discard or otherwise flag as erroneous the packets referenced by this checksum. Examples include deep packet inspection hardware that may exist transparently in a path or other higher layer packet inspection mechanisms that require or utilize an L4 checksum. Such behavior could result in blackholed or incorrectly dropped / filtered traffic that is otherwise legitimate.
 
 ### Spoofing
-
-### SID lists (IPv6 addresses)
 
 ### Path enumeration
 
