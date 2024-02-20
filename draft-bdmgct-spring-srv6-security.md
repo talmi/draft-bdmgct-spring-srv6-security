@@ -178,7 +178,7 @@ In the current threat model the SR domain defines the boundary that distinguishe
    [RFC4381] and are applicable to both SR-MPLS and SRv6.
 ~~~~~~~~~~~
 
-In the context of the current document it is assumed that SRv6 is deployed within a limited domain [RFC8799] with filtering at the domain boundaries, forming a trusted domain with respect to SRv6. Thus, external attackers are outside of the trusted domain.
+In the context of the current document it is assumed that SRv6 is deployed within a limited domain [RFC8799] with filtering at the domain boundaries, forming a trusted domain with respect to SRv6. Thus, external attackers are outside of the trusted domain. Specifically, an attack on one domain that is invoked from within a different domain is considered an external attack in the context of the current document.
 
 Following the spirit of [RFC8402], the current document  mandates a filtering mechanism that eliminates the threats from external attackers. This approach limits the scope of the attacks described in this document to within the domain (i.e., internal attackers).
 
@@ -238,18 +238,20 @@ SRv6 domains are assumed to be filtered in a way that mitigates insertion attack
 ### Impact
 The main impact of this attack is resource exhaustion which compromises the availability of the network, as described in {{mod-impact}}.
 
-## Control Plane Attacks
+## Control and Management Plane Attacks
 
 ### Overview
 Depending on the control plane protocols used in a network, it is possible to use the control plane as a way of compromising the network. For example, an attacker can advertise SIDs in order to manipulate the SR policies used in the network. A wide range of attacks can be implemented, including injecting control plane messages, selectively removing legitimate messages, replaying them or passively listening to them.
 
-### Scope
-Control plane attacks can be performed by internal attackers. Injection can be performed by off-path attackers, while removal, replaying and listening require on-path access.
+A compromised management plane can also facilitate a wide range of attacks, including manipulating the SR policies or compromising the network availability.
 
-It is assumed that SRv6 domain boundary filtering is used for mitigating potential control plane attacks from external attackers. Segment routing does not define any specific security mechanisms in existing control plane protocols. However, existing control plane protocols use authentication and security mechanisms to validate control plane information.
+### Scope
+Control plane attacks can be performed by internal attackers. Injection can be performed by off-path attackers, while removal, replaying and listening require on-path access. The scope of management attacks depends on the specific management protocol and architecture.
+
+It is assumed that SRv6 domain boundary filtering is used for mitigating potential control plane and management plane attacks from external attackers. Segment routing does not define any specific security mechanisms in existing control plane or management plane protocols. However, existing control plane and management plane protocols use authentication and security mechanisms to validate the authenticity of information.
 
 ### Impact
-A compromised control plane can impact the network in various possible ways. SR policies can be manipulated by the attacker to avoid specific paths or to prefer specific paths, as described in {{mod-impact}}. Alternatively, the attacker can compromise the availability, either by defining SR policies that load the network resources, as described in {{mod-impact}}, or by blackholing some or all of the SR policies. A passive attacker can use the control plane messages as a means for recon, in a similar manner to {{mod-impact}}.
+A compromised control plane or management plane can impact the network in various possible ways. SR policies can be manipulated by the attacker to avoid specific paths or to prefer specific paths, as described in {{mod-impact}}. Alternatively, the attacker can compromise the availability, either by defining SR policies that load the network resources, as described in {{mod-impact}}, or by blackholing some or all of the SR policies. A passive attacker can use the control plane or management plane messages as a means for recon, in a similar manner to {{mod-impact}}.
 
 ## Other Attacks
 Various attacks which are not specific to SRv6 can be used to compromise networks that deploy SRv6. For example, spoofing is not specific to SRv6, but can be used in a network that uses SRv6. Such attacks are outside the scope of this document.
@@ -323,23 +325,6 @@ SRv6 routing header
     |                                                               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~
-
-## Source Routing
-[RFC7855]
-In SRv6 network, each network element along the message forwarding path has the opportunity to tamper with the SRv6 segment list.
-
-### Source Routing at source host
-Unlike SR-MPLS, SRv6 has a significantly more approachable host implementation.
-Compared with SR-MPLS, SRv6 is easier to implement on the host side, and the threats are as follows:
-1) The attacker generates SRv6 message by obtaining and stealing the identity and real SRH of real users to use unauthorized services.
-2) In the process of transmitting SRv6 message from the user host to the operator network, SRH has also been tampered with, including interception/modification/falsification/abuse.
-
-### Source Routing from PCC at network ingress
-Typically, the network operator joins the source routing at the header node of the SRv6 domain, and the source routing may also be tampered with by SRH in the SRv6 management domain.
-
-### Source routing across network management domains
-SRv6 is now typically deployed in only one network management domain and may be deployed in different network domains in the future. In particular, the network elements and threats that have really tampered with the list may be in different network management domains in Operational SRv6 Enabled Networks, causing threats that are difficult to trace.
-As shown in the figure, suppose that when the network element 1 of SRv6 management domain 1 has tampered with the segment list, but the threat takes effect at SRv6 management domain 2. At this time, the threat generation and effective place are in different network management domains, and the management domain 2 cannot be traced back to the location where the tampering occurred.
 
 ## Limits in filtering capabilities
 
