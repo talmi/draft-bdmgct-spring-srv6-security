@@ -209,6 +209,9 @@ Avoiding a specific node or path:
 Preferring a specific path:
 : The packet can be manipulated to avert packets to a specific path. This attack can result in allowing various unauthorized services such as traffic acceleration. Alternatively, an attacker can avert traffic to be forwarded through a specific node that the attacker has access to, thus facilitating more complex on-path attacks such as passive listening, recon and various man-in-the-middle attacks. It is noted that the SR modification attack is performed by an on-path attacker who has access to packets in transit, and thus can implement these attacks directly. However, SR modification is relatively easy to implement and requires low processing resources by an attacker, while it facilitates more complex on-path attacks by averting the traffic to another node that the attacker has access to and has more processing resources.
 
+Manipulating the SRv6 network programming:
+: An attacker can trigger a specific endpoint behavior by modifying the destination address and/or SIDs in the segment list. This attack can be invoked in order to manipulate the path or in order to exhaust the resources of the SR endpoint.
+
 Availability:
 : An attacker can add SIDs to the segment list in order to increase the number hops that each packet is forwarded through and thus increase the load on the network. For example, a set of SIDs can be inserted in a way that creates a forwarding loop ([RFC8402], [RFC5095]) and thus loads the nodes along the loop. Network programming can be used in some cases to manipulate segment endpoints to perform unnecessary functions that consume processing resources. Path inflation, malicious looping and unnecessary instructions have a common outcome, resource exhaustion, which may in severe cases cause Denial of Service (DoS).
 
@@ -257,11 +260,6 @@ Various attacks which are not specific to SRv6 can be used to compromise network
 # Security Considerations in Operational SRv6 Enabled Networks
 [RFC9256] [RFC8986]
 
-## Encapsulation of packets
-
-### Allowing potential circumvention of existing network ingress / egress policy.
-
-SRv6 packets rely on the routing header in order to steer traffic that adheres to a defined SRv6 traffic policy. This mechanism supports not only use of the IPv6 routing header for packet steering, it also allows for encapsulation of both IPv4 and IPv6 packets.
 
 IPv6 routing header
 
@@ -291,8 +289,6 @@ IPv6 routing header
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~
 
-### Default allow failure mode
-Use of GUA addressing in data plane programming could result in an fail open scenario when appropriate border filtering is not implemented or supported.
 
 ## Segment Routing Header
 [RFC8754]
@@ -367,6 +363,24 @@ SRv6 is commonly used as a tunneling technology in operator networks. To provide
 # Mitigation Methods
 
 This section presents methods that can be used to mitigate the threats and issues that were presented in previous sections. This section does not introduce new security solutions or protocols.
+
+## Filtering
+
+### SRH Filtering
+
+SRv6 packets rely on the routing header in order to steer traffic that adheres to a defined SRv6 traffic policy. Thus, SRH filtering can be enforced at the ingress and egress nodes of the SR domain, so that packets with an SRH cannot be forwarded into the SR domain or out of the SR domain.
+
+### Address Range Filtering
+
+The IPv6 destination address can be filtered at the SR ingress node in order to mitigate external attacks. An ingress packet with a destination address that defines an active segment with an SR endpoint in the SR domain is filtered.
+
+In order to apply such a filtering mechanism the SR domain needs to have an allocated address range that can be detected and enforced by the SR ingress, for example by using LUA addresses.
+
+Note that the use of GUA addressing in data plane programming could result in an fail open scenario when appropriate border filtering is not implemented or supported.
+
+## Encapsulation of Packets
+
+Packets steered in an SR domain are often encapsulated in an IPv6 encapsulation. This mechanism allows for encapsulation of both IPv4 and IPv6 packets. Encapsulation of packets at the SR ingress node and decapsulation at the SR egress node mitigates the ability of external attackers to impact SR steering within the domain.
 
 # Gap Analysis
 
