@@ -178,7 +178,7 @@ In the current threat model the SR domain defines the boundary that distinguishe
    [RFC4381] and are applicable to both SR-MPLS and SRv6.
 ~~~~~~~~~~~
 
-In the context of the current document it is assumed that SRv6 is deployed within a limited domain [RFC8799] with filtering at the domain boundaries, forming a trusted domain with respect to SRv6. Thus, external attackers are outside of the trusted domain.
+In the context of the current document it is assumed that SRv6 is deployed within a limited domain [RFC8799] with filtering at the domain boundaries, forming a trusted domain with respect to SRv6. Thus, external attackers are outside of the trusted domain. Specifically, an attack on one domain that is invoked from within a different domain is considered an external attack in the context of the current document.
 
 Following the spirit of [RFC8402], the current document  mandates a filtering mechanism that eliminates the threats from external attackers. This approach limits the scope of the attacks described in this document to within the domain (i.e., internal attackers).
 
@@ -241,158 +241,82 @@ SRv6 domains are assumed to be filtered in a way that mitigates insertion attack
 ### Impact
 The main impact of this attack is resource exhaustion which compromises the availability of the network, as described in {{mod-impact}}.
 
-## Control Plane Attacks
+## Control and Management Plane Attacks
 
 ### Overview
 Depending on the control plane protocols used in a network, it is possible to use the control plane as a way of compromising the network. For example, an attacker can advertise SIDs in order to manipulate the SR policies used in the network. A wide range of attacks can be implemented, including injecting control plane messages, selectively removing legitimate messages, replaying them or passively listening to them.
 
-### Scope
-Control plane attacks can be performed by internal attackers. Injection can be performed by off-path attackers, while removal, replaying and listening require on-path access.
+A compromised management plane can also facilitate a wide range of attacks, including manipulating the SR policies or compromising the network availability.
 
-It is assumed that SRv6 domain boundary filtering is used for mitigating potential control plane attacks from external attackers. Segment routing does not define any specific security mechanisms in existing control plane protocols. However, existing control plane protocols use authentication and security mechanisms to validate control plane information.
+### Scope
+Control plane attacks can be performed by internal attackers. Injection can be performed by off-path attackers, while removal, replaying and listening require on-path access. The scope of management attacks depends on the specific management protocol and architecture.
+
+It is assumed that SRv6 domain boundary filtering is used for mitigating potential control plane and management plane attacks from external attackers. Segment routing does not define any specific security mechanisms in existing control plane or management plane protocols. However, existing control plane and management plane protocols use authentication and security mechanisms to validate the authenticity of information.
 
 ### Impact
-A compromised control plane can impact the network in various possible ways. SR policies can be manipulated by the attacker to avoid specific paths or to prefer specific paths, as described in {{mod-impact}}. Alternatively, the attacker can compromise the availability, either by defining SR policies that load the network resources, as described in {{mod-impact}}, or by blackholing some or all of the SR policies. A passive attacker can use the control plane messages as a means for recon, in a similar manner to {{mod-impact}}.
+A compromised control plane or management plane can impact the network in various possible ways. SR policies can be manipulated by the attacker to avoid specific paths or to prefer specific paths, as described in {{mod-impact}}. Alternatively, the attacker can compromise the availability, either by defining SR policies that load the network resources, as described in {{mod-impact}}, or by blackholing some or all of the SR policies. A passive attacker can use the control plane or management plane messages as a means for recon, in a similar manner to {{mod-impact}}.
 
 ## Other Attacks
 Various attacks which are not specific to SRv6 can be used to compromise networks that deploy SRv6. For example, spoofing is not specific to SRv6, but can be used in a network that uses SRv6. Such attacks are outside the scope of this document.
 
-# Security Considerations in Operational SRv6 Enabled Networks
-[RFC9256] [RFC8986]
 
+# Implications on Existing Equipment
 
-IPv6 routing header
-
-~~~~~~~~~~~
-     0                   1                   2                   3
-     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    | Next Header   |  Hdr Ext Len  | Routing Type  | Segments Left |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |  Last Entry   |     Flags     |              Tag              |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                                                               |
-    |            Segment List[0] (128 bits IPv6 address)            |
-    |                                                               |
-    |                                                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                                                               |
-    |                                                               |
-                                  ...
-    |                                                               |
-    |                                                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                                                               |
-    |            Segment List[n] (128 bits IPv6 address)            |
-    |                                                               |
-    |                                                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~~~~~~~~~
-
-
-## Segment Routing Header
-[RFC8754]
-SRv6 routing header
-
-~~~~~~~~~~~
-     0                   1                   2                   3
-     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    | Next Header   |  Hdr Ext Len  | Routing Type  | Segments Left |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |  Last Entry   |     Flags     |              Tag              |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                                                               |
-    |            Segment List[0] (128 bits IPv6 address)            |
-    |                                                               |
-    |                                                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                                                               |
-    |                                                               |
-                                  ...
-    |                                                               |
-    |                                                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                                                               |
-    |            Segment List[n] (128 bits IPv6 address)            |
-    |                                                               |
-    |                                                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~~~~~~~~~
-
-## Source Routing
-[RFC7855]
-In SRv6 network, each network element along the message forwarding path has the opportunity to tamper with the SRv6 segment list.
-
-### Source Routing at source host
-Unlike SR-MPLS, SRv6 has a significantly more approachable host implementation.
-Compared with SR-MPLS, SRv6 is easier to implement on the host side, and the threats are as follows:
-1) The attacker generates SRv6 message by obtaining and stealing the identity and real SRH of real users to use unauthorized services.
-2) In the process of transmitting SRv6 message from the user host to the operator network, SRH has also been tampered with, including interception/modification/falsification/abuse.
-
-### Source Routing from PCC at network ingress
-Typically, the network operator joins the source routing at the header node of the SRv6 domain, and the source routing may also be tampered with by SRH in the SRv6 management domain.
-
-### Source routing across network management domains
-SRv6 is now typically deployed in only one network management domain and may be deployed in different network domains in the future. In particular, the network elements and threats that have really tampered with the list may be in different network management domains in Operational SRv6 Enabled Networks, causing threats that are difficult to trace.
-As shown in the figure, suppose that when the network element 1 of SRv6 management domain 1 has tampered with the segment list, but the threat takes effect at SRv6 management domain 2. At this time, the threat generation and effective place are in different network management domains, and the management domain 2 cannot be traced back to the location where the tampering occurred.
-
-## Limits in filtering capabilities
+## Limitations in Filtering Capabilities
 
 {{RFC9288}} provides recommendations on the filtering of IPv6 packets containing IPv6 extension headers at transit routers. SRv6 relies on the routing header (RH4). Because the technology is reasonably new, many platforms, routing and otherwise, do not posses the capability to filter and in some cases even provide logging for IPv6 next-header 43 Routing type 4.
-In addition to the limits of filtering on the routing header, as described in the Overview section, an edge case exists that may cause unintended denial of service based on a layer 4 checksum error.  Because of the methodologies used in SID compression, SRH compression does not necessarily use an SRH - in practice this means filtering based on the next header is not relevant, thereby removing an important filtering mechanism.
-Under certain specific conditions, a host may generate a SID list that is capable of being compressed into a single destination address (DA). Under these circumstances, the SRH may not be generated or may be removed during the process. In this case, a host may generate a layer 4 checksum that is created after SR policy and SID compression is applied and is done so using a DA that differs from the DA that will arrive at the final destination. This incorrect L4 checksum will cause any device in the path that utilizes a L4 checksum to discard or otherwise flag as erroneous the packets referenced by this checksum. Examples include deep packet inspection hardware that may exist transparently in a path or other higher layer packet inspection mechanisms that require or utilize an L4 checksum. Such behavior could result in blackholed or incorrectly dropped / filtered traffic that is otherwise legitimate.
 
-## Exposure of internal Traffic Engineering paths
+## Middlebox Filtering Issues
+An edge case exists that may cause a layer 4 checksum error.  Because of the methodologies used in SID compression, SRH compression does not necessarily use an SRH - in practice this means filtering based on the next header is not relevant, thereby removing an important filtering mechanism. Under certain specific conditions, a host may generate a SID list that is capable of being compressed into a single destination address (DA). Under these circumstances, the SRH may not be generated or may be removed during the process. In this case, a host may generate a layer 4 checksum that is created after SR policy and SID compression is applied and is done so using a DA that differs from the DA that will arrive at the final destination. This incorrect L4 checksum will cause any device in the path that utilizes a L4 checksum to discard or otherwise flag as erroneous the packets referenced by this checksum. Examples include deep packet inspection hardware that may exist transparently in a path or other higher layer packet inspection mechanisms that require or utilize an L4 checksum. Such behavior could result in blackholed or incorrectly dropped / filtered traffic that is otherwise legitimate.
 
-Existing implementations may contain limited filtering capabilities necessary for proper isolation of the SRH from outside of an SRv6 domain.
-
-### Hidden Destination Address
 When an SRv6 packet is forwarded in the SRv6 domain, its destination address changes constantly, the real destination address is hidden. Security devices on SRv6 network may not learn the real destination address and fail to take access control on some SRv6 traffic.
 
-### Improper Traffic Filtering
 The security devices on SRv6 networks need to take care of SRv6 packets. However, the SRv6 packets usually use loopback address of the PE device a as source address. As a result, the address information of SR packets may be asymmetric, resulting in improper filter traffic problems, which affects the effectiveness of security devices.
 For example, along the forwarding path in SRv6 network, the SR-aware firewall will check the association relationships of the bidirectional VPN traffic packets. And it is able to retrieve the final destination of SRv6 packet from the last entry in the . When the <source, destination> tuple of the packet from PE1 to PE2 is <PE1-IP-ADDR, PE2-VPN-SID>, and the other direction is <PE2-IP-ADDR, PE1-VPN-SID>, the source address and destination address of the forward and backward VPN traffic are regarded as different flow. Eventually, the legal traffic may be blocked by the firewall.
 
-# Implications on Security Devices
 SRv6 is commonly used as a tunneling technology in operator networks. To provide VPN service in an SRv6 network, the ingress PE encapsulates the payload with an outer IPv6 header with the SRH carrying the SR Policy segment List along with the VPN service SID. The user traffic towards SRv6 provider backbone will be encapsulated in SRv6 tunnel. When constructing an SRv6 packet, the destination address field of the SRv6 packet changes constantly and the source address field of the SRv6 packet is usually assigned using an address on the originating device, which may be a host or a network element depending on configuration. This may affect the security equipment and middle boxes in the traffic path. Because of the existence of the SRH, and the additional headers, older security appliances, monitoring systems, and middle boxes cold react in different ways if they are unaware of the additional header and tunneling mechanisms leveraged by SRv6. This lack of awareness may be due to software limits, or in some cases as has been seen in other emerging technologies, may be due to limits in ASICs or NPUs that could silently drop or otherwise impede SRv6 packets.
 [RFC6169]
 
 ## Emerging technology growing pains
 
-# Mitigation Methods
-
-This section presents methods that can be used to mitigate the threats and issues that were presented in previous sections. This section does not introduce new security solutions or protocols.
-
-## Filtering
-
-### SRH Filtering
-
-SRv6 packets rely on the routing header in order to steer traffic that adheres to a defined SRv6 traffic policy. Thus, SRH filtering can be enforced at the ingress and egress nodes of the SR domain, so that packets with an SRH cannot be forwarded into the SR domain or out of the SR domain.
-
-### Address Range Filtering
-
-The IPv6 destination address can be filtered at the SR ingress node in order to mitigate external attacks. An ingress packet with a destination address that defines an active segment with an SR endpoint in the SR domain is filtered.
-
-In order to apply such a filtering mechanism the SR domain needs to have an allocated address range that can be detected and enforced by the SR ingress, for example by using LUA addresses.
-
-Note that the use of GUA addressing in data plane programming could result in an fail open scenario when appropriate border filtering is not implemented or supported.
-
-## Encapsulation of Packets
-
-Packets steered in an SR domain are often encapsulated in an IPv6 encapsulation. This mechanism allows for encapsulation of both IPv4 and IPv6 packets. Encapsulation of packets at the SR ingress node and decapsulation at the SR egress node mitigates the ability of external attackers to impact SR steering within the domain.
-
 # Gap Analysis
 
 This section analyzes the security related gaps with respect to the threats and issues that were discussed in the previous sections.
 
-# Other considerations
-
-## Existing IPv6 Vulnerabilities
-
-Because SRv6 is completely reliant on IPv6 for addressing, forwarding, and fundamental networking basics, it is potentially subject to any existing or emerging IPv6 vulnerabilities, however, this is out of scope for this document. [RFC9099]
-
 # Topics for Further Consideration
+
+## Security Considerations in Operational SRv6 Enabled Networks
+[RFC9256] [RFC8986]
+
+## Segment Routing Header
+
+The SRv6 Segment Routing Header (SRH) is defined in [RFC8754].
+
+~~~~~~~~~~~
+     0                   1                   2                   3
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    | Next Header   |  Hdr Ext Len  | Routing Type  | Segments Left |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |  Last Entry   |     Flags     |              Tag              |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    |            Segment List[0] (128 bits IPv6 address)            |
+    |                                                               |
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    |                                                               |
+                                  ...
+    |                                                               |
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    |            Segment List[n] (128 bits IPv6 address)            |
+    |                                                               |
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~~~~~~~~~
 
 ## SRH Compression
 
