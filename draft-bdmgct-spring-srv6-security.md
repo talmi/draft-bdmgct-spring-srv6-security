@@ -307,12 +307,6 @@ SRv6 is commonly used as a tunneling technology in operator networks. To provide
 
 This section analyzes the security related gaps with respect to the threats and issues that were discussed in the previous sections.
 
-# Other considerations
-
-## Existing IPv6 Vulnerabilities
-
-Because SRv6 is completely reliant on IPv6 for addressing, forwarding, and fundamental networking basics, it is potentially subject to any existing or emerging IPv6 vulnerabilities, however, this is out of scope for this document. [RFC9099]
-
 # Topics for Further Consideration
 
 ## Security Considerations in Operational SRv6 Enabled Networks
