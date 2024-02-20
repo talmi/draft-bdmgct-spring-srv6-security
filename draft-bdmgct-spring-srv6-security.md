@@ -254,6 +254,8 @@ A compromised control plane can impact the network in various possible ways. SR 
 ## Other Attacks
 Various attacks which are not specific to SRv6 can be used to compromise networks that deploy SRv6. For example, spoofing is not specific to SRv6, but can be used in a network that uses SRv6. Such attacks are outside the scope of this document.
 
+Because SRv6 is completely reliant on IPv6 for addressing, forwarding, and fundamental networking basics, it is potentially subject to any existing or emerging IPv6 vulnerabilities [RFC9099], however, this is out of scope for this document. 
+
 # Security Considerations in Operational SRv6 Enabled Networks
 [RFC9256] [RFC8986]
 
@@ -371,12 +373,6 @@ This section presents methods that can be used to mitigate the threats and issue
 # Gap Analysis
 
 This section analyzes the security related gaps with respect to the threats and issues that were discussed in the previous sections.
-
-# Other considerations
-
-## Existing IPv6 Vulnerabilities
-
-Because SRv6 is completely reliant on IPv6 for addressing, forwarding, and fundamental networking basics, it is potentially subject to any existing or emerging IPv6 vulnerabilities, however, this is out of scope for this document. [RFC9099]
 
 # Topics for Further Consideration
 
