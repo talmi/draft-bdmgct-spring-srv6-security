@@ -259,6 +259,29 @@ A compromised control plane or management plane can impact the network in variou
 ## Other Attacks
 Various attacks which are not specific to SRv6 can be used to compromise networks that deploy SRv6. For example, spoofing is not specific to SRv6, but can be used in a network that uses SRv6. Such attacks are outside the scope of this document.
 
+Because SRv6 is completely reliant on IPv6 for addressing, forwarding, and fundamental networking basics, it is potentially subject to any existing or emerging IPv6 vulnerabilities [RFC9099], however, this is out of scope for this document.
+
+# Mitigation Methods
+
+This section presents methods that can be used to mitigate the threats and issues that were presented in previous sections. This section does not introduce new security solutions or protocols.
+
+## Filtering
+
+### SRH Filtering
+
+SRv6 packets rely on the routing header in order to steer traffic that adheres to a defined SRv6 traffic policy. Thus, SRH filtering can be enforced at the ingress and egress nodes of the SR domain, so that packets with an SRH cannot be forwarded into the SR domain or out of the SR domain.
+
+### Address Range Filtering
+
+The IPv6 destination address can be filtered at the SR ingress node in order to mitigate external attacks. An ingress packet with a destination address that defines an active segment with an SR endpoint in the SR domain is filtered.
+
+In order to apply such a filtering mechanism the SR domain needs to have an allocated address range that can be detected and enforced by the SR ingress, for example by using LUA addresses.
+
+Note that the use of GUA addressing in data plane programming could result in an fail open scenario when appropriate border filtering is not implemented or supported.
+
+## Encapsulation of Packets
+
+Packets steered in an SR domain are often encapsulated in an IPv6 encapsulation. This mechanism allows for encapsulation of both IPv4 and IPv6 packets. Encapsulation of packets at the SR ingress node and decapsulation at the SR egress node mitigates the ability of external attackers to impact SR steering within the domain.
 
 # Implications on Existing Equipment
 
@@ -320,7 +343,6 @@ The SRv6 Segment Routing Header (SRH) is defined in [RFC8754].
 
 ## SRH Compression
 
-
 ## Spoofing
 
 ## Path enumeration
@@ -331,11 +353,11 @@ This seems like a non-issue from a WAN perspective. Needs more thought - could b
 
 # Security Considerations
 
-TODO Security
+The security considerations of SRv6 are presented throughout this document.
 
 # IANA Considerations
 
-Example non-RFC link {{IANAIPv6SPAR}}
+This document has no IANA actions.
 
 --- back
 
