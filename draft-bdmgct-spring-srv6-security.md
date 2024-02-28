@@ -104,7 +104,7 @@ This document describes various threats to SRv6 networks and also presents exist
 
 - SID: Segment Identifier [RFC8402]
 
-- SRH: Segment Routing Header [RFC8754]  
+- SRH: Segment Routing Header [RFC8754]
 
 - SRv6: Segment Routing over IPv6 [RFC8402]
 
