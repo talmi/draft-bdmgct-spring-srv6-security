@@ -67,11 +67,7 @@ informative:
 
 --- abstract
 
-SRv6 is a traffic engineering, encapsulation, and steering mechanism utilizing IPv6 addresses to identify segments in a pre-defined policy. While SRv6 uses what appear to be typical IPv6 addresses, the address space is treated differently, and in most (all?) cases.
-
-A typical IPv6 unicast address is comprised of a network prefix, host identifier, and a subnet mask. A typical SRv6 segment identifier (SID) is broken into a locator, a function identifier, and optionally, function arguments. The locator must be routable, which enables both SRv6 capable and incapable devices to participate in forwarding, either as normal IPv6 unicast or SRv6. The capability to operate in environments that may have gaps in SRv6 support allows the bridging of islands of SRv6 devices with standard IPv6 unicast routing.
-
-As standard IPv6 addressing, there are security considerations that should be well understood that may not be obvious.
+SRv6 is a traffic engineering, encapsulation and steering mechanism utilizing IPv6 addresses to identify segments in a pre-defined policy. This document discusses security considerations in SRv6 networks, including the potential threats and the possible mitigation methods. The document does not define any new security protocols or extensions to existing protocols.
 
 --- middle
 
@@ -81,29 +77,36 @@ Segment Routing (SR) [RFC8402] utilizing an IPv6 data plane is a source routing 
 and an IPv6 extension header called the Segment Routing Header (SRH) to signal and control the forwarding and path of packets by imposing an ordered list of
 path details that are processed at each hop along the signaled path. Because SRv6 is fundamentally bound to the IPv6 protocol, and because of the reliance of a
 new header there are security considerations which must be noted or addressed in order to operate an SRv6 network in a reliable and secure manner.
+Specifically, some of the main properties of SRv6 that affect the security considerations are:
 
    *  SRv6 makes use of the SRH which is a new type of Routing Extension
-      Header.  Therefore, the security properties of the Routing
-      Extension Header are addressed by the SRH.  See [RFC5095] and
-      [RFC8754] for details.
+      Header.  Some of the security considerations of the SRH are discussed in [RFC5095] and
+      [RFC8754].
 
-   *  SRv6 consists of using the SRH on the IPv6 dataplane which
-      security properties can be understood based on previous work
-      [RFC4301], [RFC4302], [RFC4303] and [RFC4942].
+   *  SRv6 consists of using the SRH on the IPv6 dataplane, and therefore
+      known security considerations of IPv6 [RFC9099] are applicable to SRv6 as well.
 
-   This document describes various threats to SRv6 networks and also
-   presents existing approaches to avoid or mitigate the threats.
+   *  While SRv6 uses what appear to be typical IPv6 addresses, the address space is processed differently by segment endpoints.
+      A typical IPv6 unicast address is comprised of a network prefix, host identifier, and a subnet mask.
+      A typical SRv6 segment identifier (SID) is broken into a locator, a function identifier, and optionally, function arguments.
+      The locator must be routable, which enables both SRv6 capable and incapable devices to participate in forwarding, either as normal IPv6 unicast or SRv6.
+      The capability to operate in environments that may have gaps in SRv6 support allows the bridging of islands of SRv6 devices with standard IPv6 unicast routing.
+
+This document describes various threats to SRv6 networks and also presents existing approaches to avoid or mitigate the threats.
 
 # Conventions and Definitions
 
+## Requirements Language
+
 {::boilerplate bcp14-tagged}
 
-SRv6
-Locator Block
-FRR
-SID
-uSID
-SRH
+## Terminology
+
+- SID: Segment Identifier [RFC8402]
+
+- SRH: Segment Routing Header [RFC8754]  
+
+- SRv6: Segment Routing over IPv6 [RFC8402]
 
 # Threat Model {#threat}
 
@@ -115,11 +118,11 @@ The main components of information security are confidentiality, integrity and a
 
 ### Confidentiality
 
-The purpose of confidentiality is to protect the user data from being exposed to unauthorized users, i.e., preventing attackers from eavesdropping to user data. The confidentiality of user data is outside the scope of this document. However, confidentiality aspects of SRv6-related information are within the scope; collecting information about SR endpoint addresses, SR policies, and network topologies, is a specific form of reconnaissance, which is further discussed in TBD.
+The purpose of confidentiality is to protect the user data from being exposed to unauthorized users, i.e., preventing attackers from eavesdropping to user data. The confidentiality of user data is outside the scope of this document. However, confidentiality aspects of SRv6-related information are within the scope; collecting information about SR endpoint addresses, SR policies, and network topologies, is a specific form of reconnaissance, which is further discussed in {{recon}}.
 
 ### Integrity
 
-Preventing information from being modified is a key property of information security. Other aspects of integrity include authentication, which is the ability to verify the source of information, and authorization, which enforces different permission policies to different users or sources. In the context of SRv6, compromising the integrity may result in packets being routed in different paths than they were intended to be routed through, which may have various implications, as further discussed in TBD.
+Preventing information from being modified is a key property of information security. Other aspects of integrity include authentication, which is the ability to verify the source of information, and authorization, which enforces different permission policies to different users or sources. In the context of SRv6, compromising the integrity may result in packets being routed in different paths than they were intended to be routed through, which may have various implications, as further discussed in  {{attacks}}.
 
 ### Availability
 
@@ -184,7 +187,7 @@ Following the spirit of [RFC8402], the current document  mandates a filtering me
 
 It should be noted that in some threat models the distinction between internal and external attackers depends on whether an attacker has access to a cryptographically secured (encrypted or authenticated) domain. Specifically, in some of these models there is a distinction between an attacker who becomes internal by having physical access, for example by plugging into an active port of a network device, and an attacker who has full access to a legitimate network node, including for example encryption keys if the network is encrypted. The current model does not distinguish between these two types of attackers and there is no assumption about whether the SR domain is cryptographically secured or not.
 
-# Attacks
+# Attacks {#attacks}
 
 ## SR Modification Attack
 
@@ -350,6 +353,11 @@ The SRv6 Segment Routing Header (SRH) is defined in [RFC8754].
 ## Infrastructure and topology exposure
 
 This seems like a non-issue from a WAN perspective. Needs more thought - could be problematic in a host to host scenario involving a WAN and/or a data center fabric.
+
+## Terms that may be used in a future version
+Locator Block
+FRR
+uSID
 
 # Security Considerations
 
