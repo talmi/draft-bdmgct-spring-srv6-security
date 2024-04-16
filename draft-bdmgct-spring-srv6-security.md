@@ -69,6 +69,10 @@ informative:
   IANAIPv6SPAR:
     target: https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
     title: "IANA IPv6 Special-Purpose Address Registry"
+  STRIDE:
+    title: The STRIDE Threat Model
+    target: https://msdn.microsoft.com/en-us/library/ee823878(v=cs.20).aspx
+    date: 2018
 
 --- abstract
 
@@ -142,6 +146,14 @@ A security attack is implemented by performing a set of one or more basic operat
 - Packet insertion: an attacker generates and injects a packet to the network. The generated packet may be maliciously crafted to include false information, including for example false addresses and SRv6-related information.
 - Packet deletion: by intercepting and removing packets from the network, an attacker prevents these packets from reaching their destination. Selective removal of packets may, in some cases, cause more severe damage than random packet loss.
 - Packet modification: the attacker modifies packets during transit.
+
+##Impact
+
+One of the important aspects of a threat analysis is the potential impact of each threat. For example, an attack on SRv6 may cause packets to be forwarded through a different path than they were intended to be forwarded through, or in other cases may compromise the availability of the system.
+
+The STRIDE approach [STRIDE] classifies threats according to their potential impact. STRIDE stands for Spoofing, Tampering, Repudiation, Information disclosure, Denial of service and Elevation of privilege. Tampering and denial of service are the most relevant to SRv6. The remaing aspects of STRIDE, namely spoofing, repudiation, information disclosure and elevation of privilege are applicable to user data, and are not relevant to the SRv6 data plane. These aspects can be analyzed, however, in the context of the control plane and management plane of networks that use SRv6.
+
+The impact of each class of attacks is widely discussed in {{attacks}}, with a focus on tampering, denial of service and reconnaissance, as well as other derived aspects.
 
 ## Threat Taxonomy
 
