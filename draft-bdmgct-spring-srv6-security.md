@@ -151,9 +151,9 @@ A security attack is implemented by performing a set of one or more basic operat
 
 One of the important aspects of a threat analysis is the potential impact of each threat. For example, an attack on SRv6 may cause packets to be forwarded through a different path than they were intended to be forwarded through, or in other cases may compromise the availability of the system.
 
-The STRIDE approach [STRIDE] classifies threats according to their potential impact. STRIDE stands for Spoofing, Tampering, Repudiation, Information disclosure, Denial of service and Elevation of privilege. Tampering and denial of service are the most relevant to SRv6. The remaing aspects of STRIDE, namely spoofing, repudiation, information disclosure and elevation of privilege are applicable to user data, and are not relevant to the SRv6 data plane. These aspects can be analyzed, however, in the context of the control plane and management plane of networks that use SRv6.
+The STRIDE approach [STRIDE] classifies threats according to their potential impact. STRIDE stands for Spoofing, Tampering, Repudiation, Information disclosure, Denial of service and Elevation of privilege. Tampering and denial of service are the most relevant to SRv6. The remaing aspects of STRIDE, namely spoofing, repudiation, information disclosure and elevation of privilege are applicable to user data, and are not relevant to the SRv6 data plane. Although these aspects can be analyzed in the context of the control plane and/or management plane of networks in general, these aspects are not specific to SRv6 and are therefore not discussed further in the current document.
 
-The impact of each class of attacks is widely discussed in {{attacks}}, with a focus on tampering, denial of service and reconnaissance, as well as other derived aspects.
+The impact of each class of attacks is widely discussed in {{attacks}}, with a focus on tampering, denial of service and reconnaissance, as well as other derived aspects, which are discussed in further detail.
 
 ## Threat Taxonomy
 
