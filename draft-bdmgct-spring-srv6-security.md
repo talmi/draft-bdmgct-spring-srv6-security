@@ -38,6 +38,11 @@ author:
     name: Tian Tong
     org: China Unicom
     email: tongt5@chinaunicom.cn
+ -
+    ins: L.M. Contreras
+    name: Luis M. Contreras
+    org: Telefonica
+    email: luismiguel.contrerasmurillo@telefonica.com
 
  -
     ins: L.M. Contreras
@@ -71,6 +76,10 @@ informative:
   IANAIPv6SPAR:
     target: https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
     title: "IANA IPv6 Special-Purpose Address Registry"
+  STRIDE:
+    title: The STRIDE Threat Model
+    target: https://msdn.microsoft.com/en-us/library/ee823878(v=cs.20).aspx
+    date: 2018
 
 --- abstract
 
@@ -145,6 +154,14 @@ A security attack is implemented by performing a set of one or more basic operat
 - Packet deletion: by intercepting and removing packets from the network, an attacker prevents these packets from reaching their destination. Selective removal of packets may, in some cases, cause more severe damage than random packet loss.
 - Packet modification: the attacker modifies packets during transit.
 
+##Impact
+
+One of the important aspects of a threat analysis is the potential impact of each threat. For example, an attack on SRv6 may cause packets to be forwarded through a different path than they were intended to be forwarded through, or in other cases may compromise the availability of the system.
+
+The STRIDE approach [STRIDE] classifies threats according to their potential impact. STRIDE stands for Spoofing, Tampering, Repudiation, Information disclosure, Denial of service and Elevation of privilege. Tampering and denial of service are the most relevant to SRv6. The remaing aspects of STRIDE, namely spoofing, repudiation, information disclosure and elevation of privilege are applicable to user data, and are not relevant to the SRv6 data plane. Although these aspects can be analyzed in the context of the control plane and/or management plane of networks in general, these aspects are not specific to SRv6 and are therefore not discussed further in the current document.
+
+The impact of each class of attacks is widely discussed in {{attacks}}, with a focus on tampering, denial of service and reconnaissance, as well as other derived aspects, which are discussed in further detail.
+
 ## Threat Taxonomy
 
 The threat terminology used in this document is based on [RFC3552]. Threats are classified according to two main criteria: internal vs. external attackers, and on-path vs. off-path attackers, as discussed in [RFC9055].
@@ -203,7 +220,7 @@ An attacker can modify a packet while it is in transit in a way that directly af
 
 Modification of an existing SRH can be further classified into several possible attacks. Specifically, the attack can include adding one or more SIDs to the segment list, removing one or more SIDs or replacing some of the SIDs with differnet SIDs. Another possible type of modification is by adding, removing or modifying TLV fields in the SRH.
 
-When an SRH is present modifying the destination address (DA) of the IPv6 header affects the active segment. However, DA modification can affect the SR policy even in the absence of an SRH. One example is modifying a DA which is used as a Binding SID [RFC8402]. Another example is a compressed segment list that is incorporated in the DA without an SRH {{I-D.ietf-spring-srv6-srh-compression}}.
+When an SRH is present modifying the destination address (DA) of the IPv6 header affects the active segment. However, DA modification can affect the SR policy even in the absence of an SRH. One example is modifying a DA which is used as a Binding SID [RFC8402]. Another example is modifying a DA which represents a compressed segment list {{I-D.ietf-spring-srv6-srh-compression}}. SRH compression allows to encode multiple compressed SIDs within a single 128-bit SID, and thus modifying the DA can affect one or more hops in the SR policy.
 
 ### Scope
 An SR modification attack can be performed by on-path attackers. As discussed in {{threat}}, it assumed that filtering is deployed at the domain boundaries, thus limiting the ability of implementing SR modification attacks to on-path internal attackers.
@@ -218,6 +235,9 @@ Avoiding a specific node or path:
 
 Preferring a specific path:
 : The packet can be manipulated to avert packets to a specific path. This attack can result in allowing various unauthorized services such as traffic acceleration. Alternatively, an attacker can avert traffic to be forwarded through a specific node that the attacker has access to, thus facilitating more complex on-path attacks such as passive listening, recon and various man-in-the-middle attacks. It is noted that the SR modification attack is performed by an on-path attacker who has access to packets in transit, and thus can implement these attacks directly. However, SR modification is relatively easy to implement and requires low processing resources by an attacker, while it facilitates more complex on-path attacks by averting the traffic to another node that the attacker has access to and has more processing resources.
+
+Forwarding through a path that causes the packet to be discarded:
+: SR modification may casue a packet to be forwarded to a point in the network where it can no longer be forwarded, causing the packet to be discarded.
 
 Manipulating the SRv6 network programming:
 : An attacker can trigger a specific endpoint behavior by modifying the destination address and/or SIDs in the segment list. This attack can be invoked in order to manipulate the path or in order to exhaust the resources of the SR endpoint.
@@ -304,7 +324,9 @@ This section presents methods that can be used to mitigate the threats and issue
 
 ### SRH Filtering
 
-SRv6 packets rely on the routing header in order to steer traffic that adheres to a defined SRv6 traffic policy. Thus, SRH filtering can be enforced at the ingress and egress nodes of the SR domain, so that packets with an SRH cannot be forwarded into the SR domain or out of the SR domain.
+SRv6 packets rely on the routing header in order to steer traffic that adheres to a defined SRv6 traffic policy. Thus, SRH filtering can be enforced at the ingress and egress nodes of the SR domain, so that packets with an SRH cannot be forwarded into the SR domain or out of the SR domain. Specifically, such filtering is performed by detecting Next Header 43 (Routing Header) with Routing Type 4 (SRH).
+
+Because of the methodologies used in SID compression {{I-D.ietf-spring-srv6-srh-compression}}, SRH compression does not necessarily use an SRH. In practice this means that when compressed segment lists are used without an SRH, filtering based on the Next Header is not relevant, and thus filtering can only be applied baed on the address range, as described below.
 
 ### Address Range Filtering
 
@@ -325,8 +347,6 @@ Packets steered in an SR domain are often encapsulated in an IPv6 encapsulation.
 {{RFC9288}} provides recommendations on the filtering of IPv6 packets containing IPv6 extension headers at transit routers. SRv6 relies on the routing header (RH4). Because the technology is reasonably new, many platforms, routing and otherwise, do not posses the capability to filter and in some cases even provide logging for IPv6 next-header 43 Routing type 4.
 
 ## Middlebox Filtering Issues
-An edge case exists that may cause a layer 4 checksum error.  Because of the methodologies used in SID compression, SRH compression does not necessarily use an SRH - in practice this means filtering based on the next header is not relevant, thereby removing an important filtering mechanism. Under certain specific conditions, a host may generate a SID list that is capable of being compressed into a single destination address (DA). Under these circumstances, the SRH may not be generated or may be removed during the process. In this case, a host may generate a layer 4 checksum that is created after SR policy and SID compression is applied and is done so using a DA that differs from the DA that will arrive at the final destination. This incorrect L4 checksum will cause any device in the path that utilizes a L4 checksum to discard or otherwise flag as erroneous the packets referenced by this checksum. Examples include deep packet inspection hardware that may exist transparently in a path or other higher layer packet inspection mechanisms that require or utilize an L4 checksum. Such behavior could result in blackholed or incorrectly dropped / filtered traffic that is otherwise legitimate.
-
 When an SRv6 packet is forwarded in the SRv6 domain, its destination address changes constantly, the real destination address is hidden. Security devices on SRv6 network may not learn the real destination address and fail to take access control on some SRv6 traffic.
 
 The security devices on SRv6 networks need to take care of SRv6 packets. However, the SRv6 packets usually use loopback address of the PE device a as source address. As a result, the address information of SR packets may be asymmetric, resulting in improper filter traffic problems, which affects the effectiveness of security devices.
@@ -341,14 +361,26 @@ SRv6 is commonly used as a tunneling technology in operator networks. To provide
 
 This section analyzes the security related gaps with respect to the threats and issues that were discussed in the previous sections.
 
+# Security Considerations
+
+The security considerations of SRv6 are presented throughout this document.
+
+# IANA Considerations
+
+This document has no IANA actions.
+
 # Topics for Further Consideration
 
-## Security Considerations in Operational SRv6 Enabled Networks
-[RFC9256] [RFC8986]
+This section lists topics that will be discussed further before deciding whether they need to be included in this document, as well as some placeholders for items that need further work.
 
-## Segment Routing Header
-
-The SRv6 Segment Routing Header (SRH) is defined in [RFC8754].
+- The following references may be used in the future: [RFC9256] [RFC8986]
+- SRH compression
+- Spoofing
+- Path enumeration
+- Infrastructure and topology exposure: this seems like a non-issue from a WAN perspective. Needs more thought - could be problematic in a host to host scenario involving a WAN and/or a data center fabric.
+- Terms that may be used in a future version: Locator Block, FRR, uSID
+- L4 checksum: [RFC8200] specifies that when the Routing header is present the L4 checksum is computed by the originating node based on the IPv6 address of the last element of the Routing header.  When compressed segment lists {{I-D.ietf-spring-srv6-srh-compression}} are used, the last element of the Routing header may be different than the Destination Address as received by the final destination. Furthermore, compressed segment lists can be used in the Destination Address without the presence of a Routing header, and in this case the IPv6 Destination address can be modified along the path. As a result, some existing middleboxes which verify the L4 checksum might miscalculate the checksum. This issue is currently under discusison in the SPRING WG.
+- Segment Routing Header figure: the SRv6 Segment Routing Header (SRH) is defined in [RFC8754].
 
 ~~~~~~~~~~~
      0                   1                   2                   3
@@ -376,19 +408,6 @@ The SRv6 Segment Routing Header (SRH) is defined in [RFC8754].
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~
 
-
-## Spoofing
-
-## Path enumeration
-
-## Infrastructure and topology exposure
-
-This seems like a non-issue from a WAN perspective. Needs more thought - could be problematic in a host to host scenario involving a WAN and/or a data center fabric.
-
-## Terms that may be used in a future version
-Locator Block
-FRR
-uSID
 
 # Security Considerations
 
