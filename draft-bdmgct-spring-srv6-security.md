@@ -253,13 +253,13 @@ Availability:
 
 Header compression in SRv6 allows to encode multiple compressed SIDs within a single 128-bit SID. That multiple compressed SIDs are concatenated in the DA reflecting each of the nodes that the flow will traverse up to reaching its destination, thus conforming the traffic engineering path to follow. As long as the flow traverses the SRv6 nodes, the compressed SIDs corresponding to each of those nodes is removed with the DA being shifted to the left. The process is repeated up to reaching the last SRv6 node.
 
-With this processing of the SIDs, each node only determines the next compressed SID applicable only after processing its own corresponding compressed SID. It is only at that moment where issues can be revealed in terms of the validity of the next compressed SID. 
+With this processing of the SIDs, each node only determines the next compressed SID applicable only after processing its own corresponding compressed SID. It is only at that moment where issues can be revealed in terms of the validity of the next compressed SID.
 
 ###  Scope
 
 A modification or alteration of the compressed header can motivate different undesirable situations. An attack of these characteristics can be performed by on-path attackers.
 
-A first case is that the same kind of issues as the ones identified for SR modification also apply in this case, despite the encoding of the traffic engineered path is different. 
+A first case is that the same kind of issues as the ones identified for SR modification also apply in this case, despite the encoding of the traffic engineered path is different.
 
 A second case can be the insertion of a wrong compressed SID, or the modification of an existing one, in some point of the DA implies the processing of the packet flows up to a point in the network where no longer can be forwarded.
 
@@ -267,9 +267,9 @@ Finally, it is also possible the creation of loops by sequencing the compressed 
 
 ###  Impact
 
-Similar effects as the ones described for the case of SR modification also apply to this case, in terms of affection to the flow steering. 
+Similar effects as the ones described for the case of SR modification also apply to this case, in terms of affection to the flow steering.
 
-Furthermore, the attacks focused on introducing wrong compressed SIDs or the creation of loops can generate DoS situations either by keeping the nodes processing multiple flows with wrong compressed SIDs, or by generating artificial traffic between nodes in the network which can lead to link congestion. 
+Furthermore, the attacks focused on introducing wrong compressed SIDs or the creation of loops can generate DoS situations either by keeping the nodes processing multiple flows with wrong compressed SIDs, or by generating artificial traffic between nodes in the network which can lead to link congestion.
 
 
 ## Reconnaissance {#recon}
@@ -346,7 +346,7 @@ Packets steered in an SR domain are often encapsulated in an IPv6 encapsulation.
 
 The SRH can be secured by an HMAC TLV, as defined in [RFC8754]. The HMAC is an optional TLV that secures the segment list, the SRH flags, the SRH Last Entry field and the IPv6 source address. A pre-shared key is used in the generation and verification of the HMAC.
 
-Using an HMAC in an SR domain can mitigate some of the SR Modification Attacks ({{modification}}). For example, the segment list is protected by the HMAC. However, an internal attacker who does not have access to the pre-shared key can capture legitimate packets, and later replay the SRH and HMAC from these recorded packets. This allows the attacker to insert the previously recorded SRH and HMAC into a newly injected packet. An on-path internal attacker can also replace the SRH of an in-transit packet with a different SRH that was previously captured. 
+Using an HMAC in an SR domain can mitigate some of the SR Modification Attacks ({{modification}}). For example, the segment list is protected by the HMAC. However, an internal attacker who does not have access to the pre-shared key can capture legitimate packets, and later replay the SRH and HMAC from these recorded packets. This allows the attacker to insert the previously recorded SRH and HMAC into a newly injected packet. An on-path internal attacker can also replace the SRH of an in-transit packet with a different SRH that was previously captured.
 
 # Implications on Existing Equipment
 
