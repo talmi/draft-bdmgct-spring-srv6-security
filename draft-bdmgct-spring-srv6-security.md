@@ -111,6 +111,8 @@ This document describes various threats to SRv6 networks and also presents exist
 
 ## Terminology
 
+- HMAC TLV: Hashed Message Authentication Code Type Length Value [RFC8754]
+
 - SID: Segment Identifier [RFC8402]
 
 - SRH: Segment Routing Header [RFC8754]
@@ -202,11 +204,11 @@ In the context of the current document it is assumed that SRv6 is deployed withi
 
 Following the spirit of [RFC8402], the current document  mandates a filtering mechanism that eliminates the threats from external attackers. This approach limits the scope of the attacks described in this document to within the domain (i.e., internal attackers).
 
-It should be noted that in some threat models the distinction between internal and external attackers depends on whether an attacker has access to a cryptographically secured (encrypted or authenticated) domain. Specifically, in some of these models there is a distinction between an attacker who becomes internal by having physical access, for example by plugging into an active port of a network device, and an attacker who has full access to a legitimate network node, including for example encryption keys if the network is encrypted. The current model does not distinguish between these two types of attackers and there is no assumption about whether the SR domain is cryptographically secured or not.
+It should be noted that in some threat models the distinction between internal and external attackers depends on whether an attacker has access to a cryptographically secured (encrypted or authenticated) domain. Specifically, in some of these models there is a distinction between an attacker who becomes internal by having physical access, for example by plugging into an active port of a network device, and an attacker who has full access to a legitimate network node, including for example encryption keys if the network is encrypted. The current model does not distinguish between these two types of attackers and there is no assumption about whether the SR domain is cryptographically secured or not. Thus, some of the attacks that are described in the next section can be mitigated by cryptographic means, as further discussed in {{hmac}}.
 
 # Attacks {#attacks}
 
-## SR Modification Attack
+## SR Modification Attack {#modification}
 
 ### Overview
 An attacker can modify a packet while it is in transit in a way that directly affects the packet's SR policy. The modification can affect the destination address of the IPv6 header and/or the SRH. In this context SRH modification may refer to inserting an SRH, removing an SRH, or modifying some of the fields of an existing SRH.
@@ -284,7 +286,7 @@ Various attacks which are not specific to SRv6 can be used to compromise network
 
 Because SRv6 is completely reliant on IPv6 for addressing, forwarding, and fundamental networking basics, it is potentially subject to any existing or emerging IPv6 vulnerabilities [RFC9099], however, this is out of scope for this document.
 
-# Mitigation Methods
+# Mitigation Methods {#mitigations}
 
 This section presents methods that can be used to mitigate the threats and issues that were presented in previous sections. This section does not introduce new security solutions or protocols.
 
@@ -307,6 +309,12 @@ Note that the use of GUA addressing in data plane programming could result in an
 ## Encapsulation of Packets
 
 Packets steered in an SR domain are often encapsulated in an IPv6 encapsulation. This mechanism allows for encapsulation of both IPv4 and IPv6 packets. Encapsulation of packets at the SR ingress node and decapsulation at the SR egress node mitigates the ability of external attackers to impact SR steering within the domain.
+
+## Hashed Message Authentication Code (HMAC) {#hmac}
+
+The SRH can be secured by an HMAC TLV, as defined in [RFC8754]. The HMAC is an optional TLV that secures the segment list, the SRH flags, the SRH Last Entry field and the IPv6 source address. A pre-shared key is used in the generation and verification of the HMAC.
+
+Using an HMAC in an SR domain can mitigate some of the SR Modification Attacks ({{modification}}). For example, the segment list is protected by the HMAC. However, an internal attacker who does not have access to the pre-shared key can capture legitimate packets, and later replay the SRH and HMAC from these recorded packets. This allows the attacker to insert the previously recorded SRH and HMAC into a newly injected packet. An on-path internal attacker can also replace the SRH of an in-transit packet with a different SRH that was previously captured. 
 
 # Implications on Existing Equipment
 
