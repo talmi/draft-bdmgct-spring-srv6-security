@@ -45,33 +45,31 @@ author:
     email: luismiguel.contrerasmurillo@telefonica.com
 
  -
-    ins: L.M. Contreras
-    name: Luis M. Contreras
-    org: Telefonica
-    email: luismiguel.contrerasmurillo@telefonica.com
+    ins: F. Gont
+    name: Fernando Gont
+    org: SI6 Networks
+    email: fgont@si6networks.com
 
 
 normative:
   RFC2119:
+  RFC8754:
+  RFC8402:
+  RFC9256:
+
 
 informative:
-  RFC8754:
   RFC3552:
   RFC8799:
-  RFC9256:
   RFC9055:
   RFC7384:
   RFC8986:
   RFC7855:
+  RFC7872:
+  RFC9098:
   RFC5095:
-  RFC8402:
-  RFC4301:
-  RFC4302:
-  RFC4303:
-  RFC4942:
   RFC9288:
   RFC9099:
-  RFC6169:
   I-D.ietf-spring-srv6-srh-compression:
   IANAIPv6SPAR:
     target: https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
@@ -360,8 +358,7 @@ When an SRv6 packet is forwarded in the SRv6 domain, its destination address cha
 The security devices on SRv6 networks need to take care of SRv6 packets. However, the SRv6 packets usually use loopback address of the PE device a as source address. As a result, the address information of SR packets may be asymmetric, resulting in improper filter traffic problems, which affects the effectiveness of security devices.
 For example, along the forwarding path in SRv6 network, the SR-aware firewall will check the association relationships of the bidirectional VPN traffic packets. And it is able to retrieve the final destination of SRv6 packet from the last entry in the . When the <source, destination> tuple of the packet from PE1 to PE2 is <PE1-IP-ADDR, PE2-VPN-SID>, and the other direction is <PE2-IP-ADDR, PE1-VPN-SID>, the source address and destination address of the forward and backward VPN traffic are regarded as different flow. Eventually, the legal traffic may be blocked by the firewall.
 
-SRv6 is commonly used as a tunneling technology in operator networks. To provide VPN service in an SRv6 network, the ingress PE encapsulates the payload with an outer IPv6 header with the SRH carrying the SR Policy segment List along with the VPN service SID. The user traffic towards SRv6 provider backbone will be encapsulated in SRv6 tunnel. When constructing an SRv6 packet, the destination address field of the SRv6 packet changes constantly and the source address field of the SRv6 packet is usually assigned using an address on the originating device, which may be a host or a network element depending on configuration. This may affect the security equipment and middle boxes in the traffic path. Because of the existence of the SRH, and the additional headers, older security appliances, monitoring systems, and middle boxes cold react in different ways if they are unaware of the additional header and tunneling mechanisms leveraged by SRv6. This lack of awareness may be due to software limits, or in some cases as has been seen in other emerging technologies, may be due to limits in ASICs or NPUs that could silently drop or otherwise impede SRv6 packets.
-[RFC6169]
+SRv6 is commonly used as a tunneling technology in operator networks. To provide VPN service in an SRv6 network, the ingress PE encapsulates the payload with an outer IPv6 header with the SRH carrying the SR Policy segment List along with the VPN service SID. The user traffic towards SRv6 provider backbone will be encapsulated in SRv6 tunnel. When constructing an SRv6 packet, the destination address field of the SRv6 packet changes constantly and the source address field of the SRv6 packet is usually assigned using an address on the originating device, which may be a host or a network element depending on configuration. This may affect the security equipment and middle boxes in the traffic path. Because of the existence of the SRH, and the additional headers, security appliances, monitoring systems, and middle boxes could react in different ways if do not incorporate support for the supporting SRv6 mechanisms, such as the IPv6 Segment Routing Header (SRH) [RFC8754]. Additionally, implementation limitations in the processing of IPv6 packets with extension headers may result in SRv6 packets being dropped [RFC7872][RFC9098].
 
 ## Emerging technology growing pains
 
