@@ -47,22 +47,19 @@ author:
 
 normative:
   RFC2119:
+  RFC8754:
+  RFC8402:
+  RFC9256:
+
 
 informative:
-  RFC8754:
   RFC3552:
   RFC8799:
-  RFC9256:
   RFC9055:
   RFC7384:
   RFC8986:
   RFC7855:
   RFC5095:
-  RFC8402:
-  RFC4301:
-  RFC4302:
-  RFC4303:
-  RFC4942:
   RFC9288:
   RFC9099:
   RFC6169:
