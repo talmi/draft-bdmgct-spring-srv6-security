@@ -44,12 +44,6 @@ author:
     org: Telefonica
     email: luismiguel.contrerasmurillo@telefonica.com
 
- -
-    ins: L.M. Contreras
-    name: Luis M. Contreras
-    org: Telefonica
-    email: luismiguel.contrerasmurillo@telefonica.com
-
 
 normative:
   RFC2119:
