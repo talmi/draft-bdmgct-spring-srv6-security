@@ -53,17 +53,20 @@ author:
 
 normative:
   RFC2119:
+  RFC8402:
   RFC8754:
   RFC8402:
+  RFC8986:
+  RFC9020:
   RFC9256:
-
+  RFC9491:
+  RFC9524:
 
 informative:
   RFC3552:
   RFC8799:
   RFC9055:
   RFC7384:
-  RFC8986:
   RFC7855:
   RFC7872:
   RFC9098:
@@ -107,6 +110,20 @@ Specifically, some of the main properties of SRv6 that affect the security consi
       The capability to operate in environments that may have gaps in SRv6 support allows the bridging of islands of SRv6 devices with standard IPv6 unicast routing.
 
 This document describes various threats to SRv6 networks and also presents existing approaches to avoid or mitigate the threats.
+
+# Scope of this Document
+
+The following IETF RFCs were selected for security assessment as part of this effort:
+
+   * [RFC8402] : &quot;Segment Routing Architecture&quot;
+   * [RFC8754] : &quot;IPv6 Segment Routing Header (SRH)&quot;
+   * [RFC8986] : &quot;Segment Routing over IPv6 (SRv6) Network Programming&quot;
+   * [RFC9020] : &quot;YANG Data Model for Segment Routing&quot;
+   * [RFC9256] : &quot;Segment Routing Policy Architecture&quot;
+   * [RFC9491] : &quot;Integration of the Network Service Header (NSH) and Segment Routing for Service Function Chaining (SFC)&quot;
+   * [RFC9524] : &quot;Segment Routing Replication for Multipoint Service Delivery&quot;
+
+We note that SRv6 is under active development and, as such, the above documents might not cover all protocols employed in an SRv6 deployment.
 
 # Conventions and Definitions
 
