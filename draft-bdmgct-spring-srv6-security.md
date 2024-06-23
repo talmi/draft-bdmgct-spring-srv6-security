@@ -90,7 +90,7 @@ informative:
     title: IPv6 Routing Header Security
     target: https://airbus-seclab.github.io/ipv6/IPv6_RH_security-csw07.pdf
     date: 2007
-    
+
 --- abstract
 
 SRv6 is a traffic engineering, encapsulation and steering mechanism utilizing IPv6 addresses to identify segments in a pre-defined policy. This document discusses security considerations in SRv6 networks, including the potential threats and the possible mitigation methods. The document does not define any new security protocols or extensions to existing protocols.
@@ -208,7 +208,7 @@ The threat model in [ANSI-Sec] classifies threats according to their potential i
 - Unauthorized Access: an attack that results in unauthorized access might be achieved by having an attacker leverage SRv6 to circumvent security controls as a result of security devices being unable to enforce security policies in the presence of IPv6 Extension Headers (see [RFC9098]), or by directing packets through paths where packet-filtering policies are not enforced.
 - Masquerade: various attacks that result in spoofing or masquerading are possible in IPv6 networks (e.g., [RFC9098]). However, these attacks are not specific to SRv6, and are therefore not within the scope of this document.
 - System Integrity: attacks on SRv6 can manipulate the path and the processing that the packet is subject to, thus compromising the integrity of the system. Furthermore, an attack that compromises the control plane and/or the management plane is also a means of impacting the system integrity.
-- Communication Integrity: SRv6 attacks may cause packets to be forwarded through paths that the attacker controls, which may facilitate other attacks that compromise the integrity of user data. Integrity protection of user data, which is implemented in higher layers, avoids these aspects, and therefore communication integrity is not within the scope of this document. 
+- Communication Integrity: SRv6 attacks may cause packets to be forwarded through paths that the attacker controls, which may facilitate other attacks that compromise the integrity of user data. Integrity protection of user data, which is implemented in higher layers, avoids these aspects, and therefore communication integrity is not within the scope of this document.
 - Confidentiality: as in communication integrity, packets forwarded through uninteded paths may traverse nodes controlled by the attacker. Since eavsedropping to user data can be avoided by using encryption in higher layers, it is not within the scope of this document. However, eavesdropping to a network that uses SRv6 allows the attacker to collect information about SR endpoint addresses, SR policies, and network topologies, is a specific form of reconnaissance
 - Denial of Service: the availability aspects of SRv6 include the ability of attackers to leverage SRv6 as a means for compromising the performance of a network or for causing Denial of Service (DoS). Compromising the availability of the system can be achieved by sending multiple SRv6-enabled packets to/through victim nodes, where the SRv6-enabled packets result in a negative performance impact of the victim systems (see [RFC9098] for further details). Alternatively, an attacker might achieve attack amplification by causing packets to "bounce" multiple times between a set of victim nodes, with the goal of exhausing processing resources and/or bandwidth (see [CanSecWest2007] for a discussion of this type of attack).
 
@@ -332,7 +332,7 @@ Packets steered in an SR domain are often encapsulated in an IPv6 encapsulation.
 
 The SRH can be secured by an HMAC TLV, as defined in [RFC8754]. The HMAC is an optional TLV that secures the segment list, the SRH flags, the SRH Last Entry field and the IPv6 source address. A pre-shared key is used in the generation and verification of the HMAC.
 
-Using an HMAC in an SR domain can mitigate some of the SR Modification Attacks ({{modification}}). For example, the segment list is protected by the HMAC. 
+Using an HMAC in an SR domain can mitigate some of the SR Modification Attacks ({{modification}}). For example, the segment list is protected by the HMAC.
 
 The following aspects of the HAMC should be considered:
 
