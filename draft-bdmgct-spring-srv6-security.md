@@ -84,7 +84,7 @@ informative:
     date: 2018
   ANSI-Sec:
     title: "Operations, Administration, Maintenance, and Provisioning Security Requirements for the Public Telecommunications Network: A Baseline of Security Requirements for the Management Plane"
-    author: "American National Standards Institute, T1M1.5/2003-007R5"
+    target: https://www.ieee802.org/1/ecsg-linksec/meetings/July03/3m150075.pdf
     date: 2003
   CanSecWest2007:
     title: IPv6 Routing Header Security
