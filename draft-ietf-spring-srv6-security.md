@@ -107,14 +107,14 @@ new header there are security considerations which must be noted or addressed in
 Specifically, some of the main properties of SRv6 that affect the security considerations are:
 
    *  SRv6 makes use of the SRH which is a new type of Routing Extension
-      Header.  Some of the security considerations of the SRH are discussed in [RFC5095] and
+      Header.  Some security considerations of the SRH are discussed in [RFC5095] and
       [RFC8754].
 
-   *  SRv6 consists of using the SRH on the IPv6 dataplane, and therefore
+   *  SRv6 consists of using the SRH on the IPv6 data-plane, and therefore
       known security considerations of IPv6 [RFC9099] are applicable to SRv6 as well.
 
    *  While SRv6 uses what appear to be typical IPv6 addresses, the address space is processed differently by segment endpoints.
-      A typical IPv6 unicast address is comprised of a network prefix, host identifier, and a subnet mask.
+      A typical IPv6 unicast address is composed of a network prefix, host identifier, and a subnet mask.
       A typical SRv6 segment identifier (SID) is broken into a locator, a function identifier, and optionally, function arguments.
       The locator must be routable, which enables both SRv6 capable and incapable devices to participate in forwarding, either as normal IPv6 unicast or SRv6.
       The capability to operate in environments that may have gaps in SRv6 support allows the bridging of islands of SRv6 devices with standard IPv6 unicast routing.
@@ -194,9 +194,9 @@ In the current threat model the SR domain defines the boundary that distinguishe
    [RFC4381] and are applicable to both SR-MPLS and SRv6.
 ~~~~~~~~~~~
 
-In the context of the current document it is assumed that SRv6 is deployed within a limited domain [RFC8799] with filtering at the domain boundaries, forming a trusted domain with respect to SRv6. Thus, external attackers are outside of the trusted domain. Specifically, an attack on one domain that is invoked from within a different domain is considered an external attack in the context of the current document.
+In the context of the current document it is assumed that SRv6 is deployed within a limited domain [RFC8799] with filtering at the domain boundaries, forming a trusted domain with respect to SRv6. Thus, external attackers are outside the trusted domain. Specifically, an attack on one domain that is invoked from within a different domain is considered an external attack in the context of the current document.
 
-Following the spirit of [RFC8402], the current document  mandates a filtering mechanism that eliminates the threats from external attackers. This approach limits the scope of the attacks described in this document to within the domain (i.e., internal attackers).
+Following the spirit of [RFC8402], the current document mandates a filtering mechanism that eliminates the threats from external attackers. This approach limits the scope of the attacks described in this document to within the domain (i.e., internal attackers).
 
 It should be noted that in some threat models the distinction between internal and external attackers depends on whether an attacker has access to a cryptographically secured (encrypted or authenticated) domain. Specifically, in some of these models there is a distinction between an attacker who becomes internal by having physical access, for example by plugging into an active port of a network device, and an attacker who has full access to a legitimate network node, including for example encryption keys if the network is encrypted. The current model does not distinguish between these two types of attackers and there is no assumption about whether the SR domain is cryptographically secured or not. Thus, some of the attacks that are described in the next section can be mitigated by cryptographic means, as further discussed in {{hmac}}.
 
@@ -210,8 +210,8 @@ The threat model in [ANSI-Sec] classifies threats according to their potential i
 - Masquerade: various attacks that result in spoofing or masquerading are possible in IPv6 networks (e.g., [RFC9098]). However, these attacks are not specific to SRv6, and are therefore not within the scope of this document.
 - System Integrity: attacks on SRv6 can manipulate the path and the processing that the packet is subject to, thus compromising the integrity of the system. Furthermore, an attack that compromises the control plane and/or the management plane is also a means of impacting the system integrity.
 - Communication Integrity: SRv6 attacks may cause packets to be forwarded through paths that the attacker controls, which may facilitate other attacks that compromise the integrity of user data. Integrity protection of user data, which is implemented in higher layers, avoids these aspects, and therefore communication integrity is not within the scope of this document.
-- Confidentiality: as in communication integrity, packets forwarded through uninteded paths may traverse nodes controlled by the attacker. Since eavsedropping to user data can be avoided by using encryption in higher layers, it is not within the scope of this document. However, eavesdropping to a network that uses SRv6 allows the attacker to collect information about SR endpoint addresses, SR policies, and network topologies, is a specific form of reconnaissance
-- Denial of Service: the availability aspects of SRv6 include the ability of attackers to leverage SRv6 as a means for compromising the performance of a network or for causing Denial of Service (DoS). Compromising the availability of the system can be achieved by sending multiple SRv6-enabled packets to/through victim nodes, where the SRv6-enabled packets result in a negative performance impact of the victim systems (see [RFC9098] for further details). Alternatively, an attacker might achieve attack amplification by causing packets to "bounce" multiple times between a set of victim nodes, with the goal of exhausing processing resources and/or bandwidth (see [CanSecWest2007] for a discussion of this type of attack).
+- Confidentiality: as in communication integrity, packets forwarded through unintended paths may traverse nodes controlled by the attacker. Since eavesdropping to user data can be avoided by using encryption in higher layers, it is not within the scope of this document. However, eavesdropping to a network that uses SRv6 allows the attacker to collect information about SR endpoint addresses, SR policies, and network topologies, is a specific form of reconnaissance
+- Denial of Service: the availability aspects of SRv6 include the ability of attackers to leverage SRv6 as a means for compromising the performance of a network or for causing Denial of Service (DoS). Compromising the availability of the system can be achieved by sending multiple SRv6-enabled packets to/through victim nodes, where the SRv6-enabled packets result in a negative performance impact of the victim systems (see [RFC9098] for further details). Alternatively, an attacker might achieve attack amplification by causing packets to "bounce" multiple times between a set of victim nodes, with the goal of exhausting processing resources and/or bandwidth (see [CanSecWest2007] for a discussion of this type of attack).
 
 {{attacks}} discusses specific implementations of these attacks, and possible mitigations are discussed in {{mitigations}}.
 
@@ -232,11 +232,11 @@ This section describes attacks that are based on packet manipulation and process
 ## SR Modification Attack {#modification}
 
 ### Overview
-An attacker can modify a packet while it is in transit in a way that directly affects the packet's SR policy. The modification can affect the destination address of the IPv6 header and/or the SRH. In this context SRH modification may refer to inserting an SRH, removing an SRH, or modifying some of the fields of an existing SRH.
+An attacker can modify a packet while it is in transit in a way that directly affects the packet's SR policy. The modification can affect the destination address of the IPv6 header and/or the SRH. In this context SRH modification may refer to inserting an SRH, removing an SRH, or modifying some fields of an existing SRH.
 
-Modification of an existing SRH can be further classified into several possible attacks. Specifically, the attack can include adding one or more SIDs to the segment list, removing one or more SIDs or replacing some of the SIDs with differnet SIDs. Another possible type of modification is by adding, removing or modifying TLV fields in the SRH.
+Modification of an existing SRH can be further classified into several possible attacks. Specifically, the attack can include adding one or more SIDs to the segment list, removing one or more SIDs or replacing some SIDs with different SIDs. Another possible type of modification is by adding, removing or modifying TLV fields in the SRH.
 
-When an SRH is present modifying the destination address (DA) of the IPv6 header affects the active segment. However, DA modification can affect the SR policy even in the absence of an SRH. One example is modifying a DA which is used as a Binding SID [RFC8402]. Another example is modifying a DA which represents a compressed segment list {{I-D.ietf-spring-srv6-srh-compression}}. SRH compression allows to encode multiple compressed SIDs within a single 128-bit SID, and thus modifying the DA can affect one or more hops in the SR policy.
+When an SRH is present modifying the destination address (DA) of the IPv6 header affects the active segment. However, DA modification can affect the SR policy even in the absence of an SRH. One example is modifying a DA which is used as a Binding SID [RFC8402]. Another example is modifying a DA which represents a compressed segment list {{I-D.ietf-spring-srv6-srh-compression}}. SRH compression allows encoding multiple compressed SIDs within a single 128-bit SID, and thus modifying the DA can affect one or more hops in the SR policy.
 
 ### Scope
 An SR modification attack can be performed by on-path attackers. As discussed in {{threat}}, it assumed that filtering is deployed at the domain boundaries, thus limiting the ability of implementing SR modification attacks to on-path internal attackers.
@@ -253,7 +253,7 @@ Preferring a specific path:
 : The packet can be manipulated to avert packets to a specific path. This attack can result in allowing various unauthorized services such as traffic acceleration. Alternatively, an attacker can avert traffic to be forwarded through a specific node that the attacker has access to, thus facilitating more complex on-path attacks such as passive listening, recon and various man-in-the-middle attacks. It is noted that the SR modification attack is performed by an on-path attacker who has access to packets in transit, and thus can implement these attacks directly. However, SR modification is relatively easy to implement and requires low processing resources by an attacker, while it facilitates more complex on-path attacks by averting the traffic to another node that the attacker has access to and has more processing resources.
 
 Forwarding through a path that causes the packet to be discarded:
-: SR modification may casue a packet to be forwarded to a point in the network where it can no longer be forwarded, causing the packet to be discarded.
+: SR modification may cause a packet to be forwarded to a point in the network where it can no longer be forwarded, causing the packet to be discarded.
 
 Manipulating the SRv6 network programming:
 : An attacker can trigger a specific endpoint behavior by modifying the destination address and/or SIDs in the segment list. This attack can be invoked in order to manipulate the path or in order to exhaust the resources of the SR endpoint.
@@ -298,7 +298,7 @@ Control plane attacks can be performed by internal attackers. Injection can be p
 It is assumed that SRv6 domain boundary filtering is used for mitigating potential control plane and management plane attacks from external attackers. Segment routing does not define any specific security mechanisms in existing control plane or management plane protocols. However, existing control plane and management plane protocols use authentication and security mechanisms to validate the authenticity of information.
 
 ### Impact
-A compromised control plane or management plane can impact the network in various possible ways. SR policies can be manipulated by the attacker to avoid specific paths or to prefer specific paths, as described in {{mod-impact}}. Alternatively, the attacker can compromise the availability, either by defining SR policies that load the network resources, as described in {{mod-impact}}, or by blackholing some or all of the SR policies. A passive attacker can use the control plane or management plane messages as a means for recon, in a similar manner to {{mod-impact}}.
+A compromised control plane or management plane can impact the network in various possible ways. SR policies can be manipulated by the attacker to avoid specific paths or to prefer specific paths, as described in {{mod-impact}}. Alternatively, the attacker can compromise the availability, either by defining SR policies that load the network resources, as described in {{mod-impact}}, or by blackholing some or all of the SR policies. A passive attacker can use the control plane or management plane messages as a means for recon, similarly to {{mod-impact}}.
 
 ## Other Attacks
 Various attacks which are not specific to SRv6 can be used to compromise networks that deploy SRv6. For example, spoofing is not specific to SRv6, but can be used in a network that uses SRv6. Such attacks are outside the scope of this document.
@@ -375,7 +375,7 @@ This section lists topics that will be discussed further before deciding whether
 - Path enumeration
 - Infrastructure and topology exposure: this seems like a non-issue from a WAN perspective. Needs more thought - could be problematic in a host to host scenario involving a WAN and/or a data center fabric.
 - Terms that may be used in a future version: Locator Block, FRR, uSID
-- L4 checksum: [RFC8200] specifies that when the Routing header is present the L4 checksum is computed by the originating node based on the IPv6 address of the last element of the Routing header.  When compressed segment lists {{I-D.ietf-spring-srv6-srh-compression}} are used, the last element of the Routing header may be different than the Destination Address as received by the final destination. Furthermore, compressed segment lists can be used in the Destination Address without the presence of a Routing header, and in this case the IPv6 Destination address can be modified along the path. As a result, some existing middleboxes which verify the L4 checksum might miscalculate the checksum. This issue is currently under discusison in the SPRING WG.
+- L4 checksum: [RFC8200] specifies that when the Routing header is present the L4 checksum is computed by the originating node based on the IPv6 address of the last element of the Routing header.  When compressed segment lists {{I-D.ietf-spring-srv6-srh-compression}} are used, the last element of the Routing header may be different than the Destination Address as received by the final destination. Furthermore, compressed segment lists can be used in the Destination Address without the presence of a Routing header, and in this case the IPv6 Destination address can be modified along the path. As a result, some existing middleboxes which verify the L4 checksum might miscalculate the checksum. This issue is currently under discussion in the SPRING WG.
 - Segment Routing Header figure: the SRv6 Segment Routing Header (SRH) is defined in [RFC8754].
 
 ~~~~~~~~~~~
