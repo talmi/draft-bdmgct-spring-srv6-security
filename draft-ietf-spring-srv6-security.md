@@ -1,10 +1,10 @@
 ---
-title: "SRv6 Security Considerations"
-abbrev: "SRv6 Security Considerations"
+title: "Segment Routing IPv6 Security Considerations"
+abbrev: "Segment Routing IPv6 Security Considerations"
 category: std
 pi: [toc, sortrefs, symrefs]
 
-docname: draft-bdmgct-spring-srv6-security-latest
+docname: draft-ietf-spring-srv6-security-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
@@ -63,6 +63,7 @@ normative:
   RFC9524:
 
 informative:
+  RFC8754:
   RFC3552:
   RFC8799:
   RFC9055:
@@ -74,6 +75,7 @@ informative:
   RFC5095:
   RFC9288:
   RFC9099:
+  RFC8200:
   I-D.ietf-spring-srv6-srh-compression:
   IANAIPv6SPAR:
     target: https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
@@ -100,8 +102,8 @@ SRv6 is a traffic engineering, encapsulation and steering mechanism utilizing IP
 # Introduction
 
 Segment Routing (SR) [RFC8402] utilizing an IPv6 data plane is a source routing model that leverages an IPv6 underlay
-and an IPv6 extension header called the Segment Routing Header (SRH) to signal and control the forwarding and path of packets by imposing an ordered list of
-path details that are processed at each hop along the signaled path. Because SRv6 is fundamentally bound to the IPv6 protocol, and because of the reliance of a
+and an IPv6 extension header called the Segment Routing Header (SRH) [RFC8754] to signal and control the forwarding and path of packets by imposing an ordered list of
+path details that are processed at each hop along the signaled path. Because SRv6 is fundamentally bound to the IPv6 protocol, and because of the reliance on a
 new header there are security considerations which must be noted or addressed in order to operate an SRv6 network in a reliable and secure manner.
 Specifically, some of the main properties of SRv6 that affect the security considerations are:
 
@@ -314,13 +316,13 @@ This section presents methods that can be used to mitigate the threats and issue
 
 SRv6 packets rely on the routing header in order to steer traffic that adheres to a defined SRv6 traffic policy. Thus, SRH filtering can be enforced at the ingress and egress nodes of the SR domain, so that packets with an SRH cannot be forwarded into the SR domain or out of the SR domain. Specifically, such filtering is performed by detecting Next Header 43 (Routing Header) with Routing Type 4 (SRH).
 
-Because of the methodologies used in SID compression {{I-D.ietf-spring-srv6-srh-compression}}, SRH compression does not necessarily use an SRH. In practice this means that when compressed segment lists are used without an SRH, filtering based on the Next Header is not relevant, and thus filtering can only be applied baed on the address range, as described below.
+Because of the methodologies used in SID compression {{I-D.ietf-spring-srv6-srh-compression}}, SRH compression does not necessarily use an SRH. In practice this means that when compressed segment lists are used without an SRH, filtering based on the Next Header is not relevant, and thus filtering can only be applied based on the address range, as described below.
 
 ### Address Range Filtering
 
 The IPv6 destination address can be filtered at the SR ingress node in order to mitigate external attacks. An ingress packet with a destination address that defines an active segment with an SR endpoint in the SR domain is filtered.
 
-In order to apply such a filtering mechanism the SR domain needs to have an allocated address range that can be detected and enforced by the SR ingress, for example by using LUA addresses.
+In order to apply such a filtering mechanism the SR domain needs to have an allocated address range that can be detected and enforced by the SR ingress, for example by using ULA addresses.
 
 Note that the use of GUA addressing in data plane programming could result in an fail open scenario when appropriate border filtering is not implemented or supported.
 
@@ -337,7 +339,7 @@ Using an HMAC in an SR domain can mitigate some of the SR Modification Attacks (
 The following aspects of the HAMC should be considered:
 
 - The HMAC TLV is OPTIONAL.
-- While it is presumed that unique keys will be employed by each participating node, in scenarios where the network resorts to manual configuration of pre-shared keys, the same key might be reused by multiple systems as an (incorrect) shortcut to keeeping the problem of pre-shared key configuration manageable.
+- While it is presumed that unique keys will be employed by each participating node, in scenarios where the network resorts to manual configuration of pre-shared keys, the same key might be reused by multiple systems as an (incorrect) shortcut to keeping the problem of pre-shared key configuration manageable.
 - An internal attacker who does not have access to the pre-shared key can capture legitimate packets, and later replay the SRH and HMAC from these recorded packets. This allows the attacker to insert the previously recorded SRH and HMAC into a newly injected packet. An on-path internal attacker can also replace the SRH of an in-transit packet with a different SRH that was previously captured.
 
 
@@ -345,13 +347,13 @@ The following aspects of the HAMC should be considered:
 
 ## Limitations in Filtering Capabilities
 
-{{RFC9288}} provides recommendations on the filtering of IPv6 packets containing IPv6 extension headers at transit routers. SRv6 relies on the routing header (RH4). Because the technology is reasonably new, many platforms, routing and otherwise, do not posses the capability to filter and in some cases even provide logging for IPv6 next-header 43 Routing type 4.
+{{RFC9288}} provides recommendations on the filtering of IPv6 packets containing IPv6 extension headers at transit routers. SRv6 relies on the routing header (RH4). Because the technology is reasonably new, many platforms, routing and otherwise, do not possess the capability to filter and in some cases even provide logging for IPv6 next-header 43 Routing type 4.
 
 ## Middlebox Filtering Issues
 When an SRv6 packet is forwarded in the SRv6 domain, its destination address changes constantly, the real destination address is hidden. Security devices on SRv6 network may not learn the real destination address and fail to take access control on some SRv6 traffic.
 
-The security devices on SRv6 networks need to take care of SRv6 packets. However, the SRv6 packets usually use loopback address of the PE device a as source address. As a result, the address information of SR packets may be asymmetric, resulting in improper filter traffic problems, which affects the effectiveness of security devices.
-For example, along the forwarding path in SRv6 network, the SR-aware firewall will check the association relationships of the bidirectional VPN traffic packets. And it is able to retrieve the final destination of SRv6 packet from the last entry in the . When the <source, destination> tuple of the packet from PE1 to PE2 is <PE1-IP-ADDR, PE2-VPN-SID>, and the other direction is <PE2-IP-ADDR, PE1-VPN-SID>, the source address and destination address of the forward and backward VPN traffic are regarded as different flow. Eventually, the legal traffic may be blocked by the firewall.
+The security devices on SRv6 networks need to take care of SRv6 packets. However, the SRv6 packets usually use loopback address of the PE device as a source address. As a result, the address information of SR packets may be asymmetric, resulting in improper filter traffic problems, which affects the effectiveness of security devices.
+For example, along the forwarding path in SRv6 network, the SR-aware firewall will check the association relationships of the bidirectional VPN traffic packets. And it is able to retrieve the final destination of SRv6 packet from the last entry in the SRH. When the <source, destination> tuple of the packet from PE1 to PE2 is <PE1-IP-ADDR, PE2-VPN-SID>, and the other direction is <PE2-IP-ADDR, PE1-VPN-SID>, the source address and destination address of the forward and backward VPN traffic are regarded as different flow. Eventually, the legal traffic may be blocked by the firewall.
 
 SRv6 is commonly used as a tunneling technology in operator networks. To provide VPN service in an SRv6 network, the ingress PE encapsulates the payload with an outer IPv6 header with the SRH carrying the SR Policy segment List along with the VPN service SID. The user traffic towards SRv6 provider backbone will be encapsulated in SRv6 tunnel. When constructing an SRv6 packet, the destination address field of the SRv6 packet changes constantly and the source address field of the SRv6 packet is usually assigned using an address on the originating device, which may be a host or a network element depending on configuration. This may affect the security equipment and middle boxes in the traffic path. Because of the existence of the SRH, and the additional headers, security appliances, monitoring systems, and middle boxes could react in different ways if do not incorporate support for the supporting SRv6 mechanisms, such as the IPv6 Segment Routing Header (SRH) [RFC8754]. Additionally, implementation limitations in the processing of IPv6 packets with extension headers may result in SRv6 packets being dropped [RFC7872][RFC9098].
 
