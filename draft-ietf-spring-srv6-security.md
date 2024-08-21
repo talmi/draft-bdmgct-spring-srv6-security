@@ -104,18 +104,16 @@ Segment Routing (SR) [RFC8402] utilizing an IPv6 data plane is a source routing 
 and an IPv6 extension header called the Segment Routing Header (SRH) [RFC8754] to signal and control the forwarding and path of packets by imposing an ordered list of
 path details that are processed at each hop along the signaled path. Because SRv6 is fundamentally bound to the IPv6 protocol, and because of the reliance on a
 new header there are security considerations which must be noted or addressed in order to operate an SRv6 network in a reliable and secure manner.
-Specifically, some of the main properties of SRv6 that affect the security considerations are:
+Specifically, some primary properties of SRv6 that affect the security considerations are:
 
-   *  SRv6 makes use of the SRH which is a new type of Routing Extension
-      Header.  Some security considerations of the SRH are discussed in [RFC5095] and
-      [RFC8754].
+   *  SRv6 may use the SRH which is a type of Routing Extension Header defined by [RFC8754].
+      Some security considerations of the SRH are discussed in [RFC5095] section 5 and [RFC8754] section 7.
 
-   *  SRv6 consists of using the SRH on the IPv6 data-plane, and therefore
-      known security considerations of IPv6 [RFC9099] are applicable to SRv6 as well.
+   *  SRv6 uses the IPv6 data-plane, and therefore known security considerations of IPv6 [RFC9099] are applicable to SRv6 as well.
 
    *  While SRv6 uses what appear to be typical IPv6 addresses, the address space is processed differently by segment endpoints.
       A typical IPv6 unicast address is composed of a network prefix, host identifier, and a subnet mask.
-      A typical SRv6 segment identifier (SID) is broken into a locator, a function identifier, and optionally, function arguments.
+      A typical SRv6 segment identifier (SID) consists of a locator, a function identifier, and optionally, function arguments (LOC:FUNCT:ARG [RFC8986]).
       The locator must be routable, which enables both SRv6 capable and incapable devices to participate in forwarding, either as normal IPv6 unicast or SRv6.
       The capability to operate in environments that may have gaps in SRv6 support allows the bridging of islands of SRv6 devices with standard IPv6 unicast routing.
 
@@ -156,13 +154,13 @@ We note that SRv6 is under active development and, as such, the above documents 
 This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model [RFC3552], as well as some concepts from [RFC9055], [RFC7384] and [RFC9416]. Details regarding inter-domain segment routing (SR) are out of scope for this document.
 
 Internal vs. External:
-: An internal attacker in the context of SRv6 is an attacker who is located within an SR domain. Specifically, an internal attacker either has access to a node in the SR domain, or is located on an internal path between two nodes in the SR domain. In this context, the latter means that the attacker can be reached from a node in the SR domain without traversing an SR egress node, and can reach a node in the SR domain without traversing an SR ingress node. External attackers, on the other hand, are not within the SR domain.
+: An internal attacker in the context of SRv6 is an attacker who is located within an SR domain.  Specifically, an internal attacker either has access to a node in the SR domain, or is located on an internal path between two nodes in the SR domain.  External attackers, on the other hand, are not within the SR domain.
 
 On-path vs. Off-path:
 
 : On-path attackers are located in a position that allows interception, modification or dropping of in-flight packets, as well as insertion (generation) of packets. Off-path attackers can only attack by insertion of packets.
 
-The following figure depicts the attacker types according to the taxonomy above. As illustrated in the figure, on-path attackers are located along the path of the traffic that is under attack, and therefore can listen, insert, delete, modify or replay packets in transit. Off-path attackers can insert packets, and in some cases can passively listen to some of the traffic, such as multicast transmissions.
+The following figure depicts the attacker types according to the taxonomy above. As illustrated in the figure, on-path attackers are located along the path of the traffic that is under attack, and therefore can listen, insert, delete, modify or replay packets in transit. Off-path attackers can insert packets, and in some cases can passively listen to some traffic, such as multicast transmissions.
 
 ~~~~~~~~~~~
      on-path         on-path        off-path      off-path
@@ -321,7 +319,7 @@ Because of the methodologies used in SID compression {{I-D.ietf-spring-srv6-srh-
 
 The IPv6 destination address can be filtered at the SR ingress node in order to mitigate external attacks. An ingress packet with a destination address that defines an active segment with an SR endpoint in the SR domain is filtered.
 
-In order to apply such a filtering mechanism the SR domain needs to have an allocated address range that can be detected and enforced by the SR ingress, for example by using ULA addresses.
+In order to apply such a filtering mechanism the SR domain needs to have an allocated address range that can be detected and enforced by the SR ingress, for example by using ULA addresses, or preferably, by using the IANA special use prefix [IANAIPv6SPAR] for SRv6, 5f00::/16.
 
 Note that the use of GUA addressing in data plane programming could result in an fail open scenario when appropriate border filtering is not implemented or supported.
 
@@ -354,7 +352,7 @@ When an SRv6 packet is forwarded in the SRv6 domain, its destination address cha
 The security devices on SRv6 networks need to take care of SRv6 packets. However, the SRv6 packets usually use loopback address of the PE device as a source address. As a result, the address information of SR packets may be asymmetric, resulting in improper filter traffic problems, which affects the effectiveness of security devices.
 For example, along the forwarding path in SRv6 network, the SR-aware firewall will check the association relationships of the bidirectional VPN traffic packets. And it is able to retrieve the final destination of SRv6 packet from the last entry in the SRH. When the <source, destination> tuple of the packet from PE1 to PE2 is <PE1-IP-ADDR, PE2-VPN-SID>, and the other direction is <PE2-IP-ADDR, PE1-VPN-SID>, the source address and destination address of the forward and backward VPN traffic are regarded as different flow. Eventually, the legal traffic may be blocked by the firewall.
 
-SRv6 is commonly used as a tunneling technology in operator networks. To provide VPN service in an SRv6 network, the ingress PE encapsulates the payload with an outer IPv6 header with the SRH carrying the SR Policy segment List along with the VPN service SID. The user traffic towards SRv6 provider backbone will be encapsulated in SRv6 tunnel. When constructing an SRv6 packet, the destination address field of the SRv6 packet changes constantly and the source address field of the SRv6 packet is usually assigned using an address on the originating device, which may be a host or a network element depending on configuration. This may affect the security equipment and middle boxes in the traffic path. Because of the existence of the SRH, and the additional headers, security appliances, monitoring systems, and middle boxes could react in different ways if do not incorporate support for the supporting SRv6 mechanisms, such as the IPv6 Segment Routing Header (SRH) [RFC8754]. Additionally, implementation limitations in the processing of IPv6 packets with extension headers may result in SRv6 packets being dropped [RFC7872][RFC9098].
+SRv6 is commonly used as a tunneling technology in operator networks. To provide VPN service in an SRv6 network, the ingress PE encapsulates the payload with an outer IPv6 header with the SRH carrying the SR Policy segment List along with the VPN service SID. The user traffic towards SRv6 provider backbone will be encapsulated in SRv6 tunnel. When constructing an SRv6 packet, the destination address field of the SRv6 packet changes constantly and the source address field of the SRv6 packet is usually assigned using an address on the originating device, which may be a host or a network element depending on configuration. This may affect the security equipment and middle boxes in the traffic path. Because of the existence of the SRH, and the additional headers, security appliances, monitoring systems, and middle boxes could react in different ways if do not incorporate support for the supporting SRv6 mechanisms, such as the IPv6 Segment Routing Header (SRH) [RFC8754]. Additionally, implementation limitations in the processing of IPv6 packets with extension headers may result in SRv6 packets being dropped [RFC7872],[RFC9098].
 
 
 # Security Considerations
@@ -404,18 +402,9 @@ This section lists topics that will be discussed further before deciding whether
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~
 
-
-# Security Considerations
-
-The security considerations of SRv6 are presented throughout this document.
-
-# IANA Considerations
-
-This document has no IANA actions.
-
 --- back
 
 # Acknowledgments
 {:numbered="false"}
 
-The authors would like to acknowledge the contributions from Andrew Alston, Dale Carder, Bruno Decraene, Joel Halpern, Alvaro Retana, and Eric Vyncke.
+The authors would like to acknowledge the contributions from Andrew Alston, Dale Carder, Bruno Decraene, Joel Halpern, Bruno Hassanov, Alvaro Retana, and Eric Vyncke.
