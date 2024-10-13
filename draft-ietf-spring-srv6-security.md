@@ -64,7 +64,6 @@ normative:
 
 informative:
   RFC3552:
-  RFC8799:
   RFC9055:
   RFC7384:
   RFC9416:
@@ -307,7 +306,21 @@ Because SRv6 is completely reliant on IPv6 for addressing, forwarding, and funda
 
 This section presents methods that can be used to mitigate the threats and issues that were presented in previous sections. This section does not introduce new security solutions or protocols.
 
-## Filtering
+## Trusted Domains and Filtering {#filtering}
+
+### Overview
+
+As specified in [RFC8402]:
+
+~~~~~~~~~~~
+   By default, SR operates within a trusted domain.  Traffic MUST be
+   filtered at the domain boundaries.
+   The use of best practices to reduce the risk of tampering within the
+   trusted domain is important.  Such practices are discussed in
+   [RFC4381] and are applicable to both SR-MPLS and SRv6.
+~~~~~~~~~~~
+
+Following the spirit of [RFC8402], the current document assumes that SRv6 is deployed within a trusted domain. Traffic MUST be filtered at the domain boundaries. Thus, most of the attacks described in this document are limited to within the domain (i.e., internal attackers). 
 
 ### SRH Filtering
 
@@ -337,6 +350,7 @@ The following aspects of the HAMC should be considered:
 
 - The HMAC TLV is OPTIONAL.
 - While it is presumed that unique keys will be employed by each participating node, in scenarios where the network resorts to manual configuration of pre-shared keys, the same key might be reused by multiple systems as an (incorrect) shortcut to keeping the problem of pre-shared key configuration manageable.
+- When the HMAC is used there is a distinction between an attacker who becomes internal by having physical access, for example by plugging into an active port of a network device, and an attacker who has full access to a legitimate network node, including for example encryption keys if the network is encrypted. The latter type of attacker is an internal attacker who can perform any of the attacks that were described in the previous section as relevant to internal attackers.
 - An internal attacker who does not have access to the pre-shared key can capture legitimate packets, and later replay the SRH and HMAC from these recorded packets. This allows the attacker to insert the previously recorded SRH and HMAC into a newly injected packet. An on-path internal attacker can also replace the SRH of an in-transit packet with a different SRH that was previously captured.
 
 
