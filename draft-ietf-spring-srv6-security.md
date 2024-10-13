@@ -107,9 +107,9 @@ new header there are security considerations which must be noted or addressed in
 Specifically, some primary properties of SRv6 that affect the security considerations are:
 
    *  SRv6 may use the SRH which is a type of Routing Extension Header defined by [RFC8754].
-      Some security considerations of the SRH are discussed in [RFC5095] section 5 and [RFC8754] section 7.
+      Some security considerations of the Routing Header, and specifically the SRH, are discussed in [RFC5095] section 5 and [RFC8754] section 7.
 
-   *  SRv6 uses the IPv6 data-plane, and therefore known security considerations of IPv6 [RFC9099] are applicable to SRv6 as well.
+   *  SRv6 uses the IPv6 data-plane, and therefore known security considerations of IPv6 are applicable to SRv6 as well. Some of these considerations are discussed in Section 10 of [RFC8200] and in [RFC9099].
 
    *  While SRv6 uses what appear to be typical IPv6 addresses, the address space is processed differently by segment endpoints.
       A typical IPv6 unicast address is composed of a network prefix, host identifier, and a subnet mask.
