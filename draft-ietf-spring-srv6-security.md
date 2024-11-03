@@ -102,7 +102,7 @@ SRv6 is a traffic engineering, encapsulation and steering mechanism utilizing IP
 Segment Routing (SR) [RFC8402] utilizing an IPv6 data plane is a source routing model that leverages an IPv6 underlay
 and an IPv6 extension header called the Segment Routing Header (SRH) [RFC8754] to signal and control the forwarding and path of packets by imposing an ordered list of
 path details that are processed at each hop along the signaled path. Because SRv6 is fundamentally bound to the IPv6 protocol, and because of the reliance on a
-new header there are security considerations which must be noted or addressed in order to operate an SRv6 network in a reliable and secure manner.
+new header, there are security considerations which must be noted or addressed in order to operate an SRv6 network in a reliable and secure manner.
 Specifically, some primary properties of SRv6 that affect the security considerations are:
 
    *  SRv6 may use the SRH which is a type of Routing Extension Header defined by [RFC8754].
@@ -189,7 +189,7 @@ One of the important aspects of a threat analysis is the potential impact of eac
 
 The threat model in [ANSI-Sec] classifies threats according to their potential impact, defining six categories. For each of these categories we briefly discuss its applicability to SRv6 attacks.
 
-- Unauthorized Access: an attack that results in unauthorized access might be achieved by having an attacker leverage SRv6 to circumvent security controls as a result of security devices being unable to enforce security policies. For example, this can occur if packets are directed through paths where packet filtering policies are not enforced, or if some of the security policies are not enforced in the presence of IPv6 Extension Headers.
+- Unauthorized Access: an attack that results in unauthorized access might be achieved by having an attacker leverage SRv6 to circumvent security controls as a result of security devices being unable to enforce security policies. For example, this can occur if packets are directed through paths where packet filtering policies are not enforced, or if some security policies are not enforced in the presence of IPv6 Extension Headers.
 - Masquerade: various attacks that result in spoofing or masquerading are possible in IPv6 networks. However, these attacks are not specific to SRv6, and are therefore not within the scope of this document.
 - System Integrity: attacks on SRv6 can manipulate the path and the processing that the packet is subject to, thus compromising the integrity of the system. Furthermore, an attack that compromises the control plane and/or the management plane is also a means of impacting the system integrity.
 - Communication Integrity: SRv6 attacks may cause packets to be forwarded through paths that the attacker controls, which may facilitate other attacks that compromise the integrity of user data. Integrity protection of user data, which is implemented in higher layers, avoids these aspects, and therefore communication integrity is not within the scope of this document.
@@ -346,7 +346,7 @@ The following aspects of the HAMC should be considered:
 
 ## Limitations in Filtering Capabilities
 
-{{RFC9288}} provides recommendations on the filtering of IPv6 packets containing IPv6 extension headers at transit routers. SRv6 relies on the routing header (RH4). Because the technology is reasonably new, many platforms, routing and otherwise, do not possess the capability to filter and in some cases even provide logging for IPv6 next-header 43 Routing type 4.
+{{RFC9288}} provides recommendations on the filtering of IPv6 packets containing IPv6 extension headers at transit routers. SRv6 may rely on the routing header (RH4). Because the technology is reasonably new, deployments that use RH4 may not possess the capability to filter and in some cases even provide logging for IPv6 next-header 43 Routing type 4.
 
 ## Middlebox Filtering Issues
 When an SRv6 packet is forwarded in the SRv6 domain, its destination address changes constantly, the real destination address is hidden. Security devices on SRv6 network may not learn the real destination address and fail to take access control on some SRv6 traffic.
@@ -356,6 +356,10 @@ For example, along the forwarding path in SRv6 network, the SR-aware firewall wi
 
 SRv6 is commonly used as a tunneling technology in operator networks. To provide VPN service in an SRv6 network, the ingress PE encapsulates the payload with an outer IPv6 header with the SRH carrying the SR Policy segment List along with the VPN service SID. The user traffic towards SRv6 provider backbone will be encapsulated in SRv6 tunnel. When constructing an SRv6 packet, the destination address field of the SRv6 packet changes constantly and the source address field of the SRv6 packet is usually assigned using an address on the originating device, which may be a host or a network element depending on configuration. This may affect the security equipment and middle boxes in the traffic path. Because of the existence of the SRH, and the additional headers, security appliances, monitoring systems, and middle boxes could react in different ways if do not incorporate support for the supporting SRv6 mechanisms, such as the IPv6 Segment Routing Header (SRH) [RFC8754]. Additionally, implementation limitations in the processing of IPv6 packets with extension headers may result in SRv6 packets being dropped [RFC7872],[RFC9098].
 
+## Limited capability hardware
+
+In some cases, access control lists capabilities are a resource shared with other features across a given hardware platform. Filtering capabilities should be considered along with other hardware reliant functions such as VLAN scale, route table size, MAC address table size, etc. Filtering both at the control and data plane may or may not require shared resources.
+For example, some platforms may require allocating resources from route table size in order to accommodate larger numbers of access lists. Hardware and software configurations should be considered when designing the filtering capabilities for an SRv6 control and data plane.
 
 # Security Considerations
 
@@ -369,11 +373,12 @@ This document has no IANA actions.
 
 This section lists topics that will be discussed further before deciding whether they need to be included in this document, as well as some placeholders for items that need further work.
 
+- Add tables for attack section
 - The following references may be used in the future: [RFC9256] [RFC8986]
 - SRH compression
 - Spoofing
 - Path enumeration
-- Infrastructure and topology exposure: this seems like a non-issue from a WAN perspective. Needs more thought - could be problematic in a host to host scenario involving a WAN and/or a data center fabric.
+- host to host scenario involving a WAN and/or a data center fabric.
 - Terms that may be used in a future version: Locator Block, FRR, uSID
 - L4 checksum: [RFC8200] specifies that when the Routing header is present the L4 checksum is computed by the originating node based on the IPv6 address of the last element of the Routing header.  When compressed segment lists {{I-D.ietf-spring-srv6-srh-compression}} are used, the last element of the Routing header may be different than the Destination Address as received by the final destination. Furthermore, compressed segment lists can be used in the Destination Address without the presence of a Routing header, and in this case the IPv6 Destination address can be modified along the path. As a result, some existing middleboxes which verify the L4 checksum might miscalculate the checksum. This issue is currently under discussion in the SPRING WG.
 - Segment Routing Header figure: the SRv6 Segment Routing Header (SRH) is defined in [RFC8754].
