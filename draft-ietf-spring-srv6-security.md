@@ -331,9 +331,8 @@ The IPv6 destination address can be filtered at the SR ingress node and at all n
 
 In order to apply such a filtering mechanism the SR domain needs to have an infrastructure address range for SIDs, and an infrastructure address range for source addresses, that can be detected and enforced. Some examples of an infrastructure address range for SIDs are:
 1. ULA addresses
-2. The prefix defined in {{I-D.ietf-6man-sids}}.
+2. The prefix defined in [RFC9602].
 3. GUA addresses
-4. 5f00::/16 [RFC9602]
 
 Many operators reserve a /64 block for all loopback addresses and allocate /128 for each loopback interface. This simplifies the filtering of permitted source addresses.
 
