@@ -150,34 +150,40 @@ We note that SRv6 is under active development and, as such, the above documents 
 
 # Threat Model {#threat}
 
-This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model [RFC3552], as well as some concepts from [RFC9055], [RFC7384] and [RFC9416]. Details regarding inter-domain segment routing (SR) are out of scope for this document.
+This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model [RFC3552], as well as some concepts from [RFC9055], [RFC7384], [RFC7835] and [RFC9416]. Details regarding inter-domain segment routing (SR) are out of scope for this document.
 
 Internal vs. External:
+
 : An internal attacker in the context of SRv6 is an attacker who is located within an SR domain.  Specifically, an internal attacker either has access to a node in the SR domain, or is located on an internal path between two nodes in the SR domain.  External attackers, on the other hand, are not within the SR domain.
 
 On-path vs. Off-path:
 
 : On-path attackers are located in a position that allows interception, modification or dropping of in-flight packets, as well as insertion (generation) of packets. Off-path attackers can only attack by insertion of packets.
 
-The following figure depicts the attacker types according to the taxonomy above. As illustrated in the figure, on-path attackers are located along the path of the traffic that is under attack, and therefore can listen, insert, delete, modify or replay packets in transit. Off-path attackers can insert packets, and in some cases can passively listen to some traffic, such as multicast transmissions.
+Data plane vs. control plane vs. Management plane:
+
+: Attacks can be classified based on the plane they target: data, control, or management. The distinction between on-path and off-path attackers depends on the plane where the attack occurs. For instance, an attacker might be off-path from a data plane perspective but on-path from a management plane perspective.
+
+The following figure depicts an example of an SR domain with six attacker types, labeled 1-6. For instance, attacker 2 is located along the path between the SR ingress node and SR endpoint 1, and is therefore an on-path attacker both in the data plane and in the control plane. Thus, attacker 2 can listen, insert, delete, modify or replay data plane and/or control plane packets in transit. Off-path attackers, such as attackers 4 and 5, can insert packets, and in some cases can passively listen to some traffic, such as multicast transmissions. Attacker 3 is internal an on-path attacker in the management plane, as it is located along the path between the Network Management System (NMS) and SR endpoint 1.
 
 ~~~~~~~~~~~
-     on-path         on-path        off-path      off-path
-     external        internal       internal      external
-     attacker        attacker       attacker      attacker
-       |                   |        |__            |
-       |     SR      __    | __   _/|  \           |
-       |     domain /  \_/ |   \_/  v   \__        v
-       |            \      |        X      \       X
-       v            /      v                \
- ----->X---------->O------>X------->O------->O---->
-                   ^\               ^       /^
-                   | \___/\_    /\_ | _/\__/ |
-                   |        \__/    |        |
-                   |                |        |
-                  SR               SR        SR
-                  ingress        endpoint    egress
-                  node                       node
+  1.on-path   2.on-path   3.mgmt.  network       4.off-path 5.off-path
+  external    internal    plane    management    internal   external
+  attacker    attacker    on-path  system (NMS)  attacker   attacker
+       |            |           |        |            |          |
+       |            |           v  _____ v ____     _ | __       |
+       |     SR  __ | _  __   /        +---+   \___/  |   \      |
+       | domain /   |  \/  \_/  X------|NMS|          v   /      v
+       |        \   |           |      +---+          X   \      X
+       v        /   v           |                         /
+ ----->X------>O--->X---------->O------->O-------------->O---->
+               ^\               ^       /^\             /^
+               | \___/\_    /\_ | _/\__/ | \___/\______/ |
+               |        \__/    |        |               |
+               |                |        |               |
+              SR               SR        SR              SR
+              ingress      endpoint 1   endpoint 2       egress
+              node                                       node
 ~~~~~~~~~~~
 {: #threat-figure title="Threat Model Taxonomy"}
 
