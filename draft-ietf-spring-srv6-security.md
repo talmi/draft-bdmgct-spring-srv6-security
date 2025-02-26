@@ -436,4 +436,4 @@ This section lists topics that will be discussed further before deciding whether
 # Acknowledgments
 {:numbered="false"}
 
-The authors would like to acknowledge the valuable input and contributions from Zafar Ali, Andrew Alston, Dale Carder, Bruno Decraene, Dhruv Dhody, Joel Halpern, Bruno Hassanov, Alvaro Retana, Eric Vyncke, and Russ White.
+The authors would like to acknowledge the valuable input and contributions from Zafar Ali, Andrew Alston, Dale Carder, Bruno Decraene, Dhruv Dhody, Darren Dukes, Joel Halpern, Bruno Hassanov, Alvaro Retana, Eric Vyncke, and Russ White.
