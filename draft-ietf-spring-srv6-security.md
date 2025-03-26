@@ -20,7 +20,7 @@ venue:
   mail: "spring@ietf.org"
   arch: "https://mailarchive.ietf.org/arch/browse/spring/"
   github: "buraglio/draft-bdmgct-spring-srv6-security"
-  latest: "https://buraglio.github.io/draft-bdmgct-spring-srv6-security/draft-bdmgct-spring-srv6-security.html"
+  latest: "https://github.com/buraglio/draft-bdmgct-spring-srv6-security"
 
 author:
  -
@@ -436,4 +436,4 @@ This section lists topics that will be discussed further before deciding whether
 # Acknowledgments
 {:numbered="false"}
 
-The authors would like to acknowledge the valuable input and contributions from Zafar Ali, Andrew Alston, Dale Carder, Bruno Decraene, Dhruv Dhody, Darren Dukes, Joel Halpern, Bruno Hassanov, Alvaro Retana, Eric Vyncke, and Russ White.
+The authors would like to acknowledge the valuable input and contributions from Zafar Ali, Andrew Alston, Dale Carder, Bruno Decraene, Dhruv Dhody, Darren Dukes, Joel Halpern, Boris Hassanov, Alvaro Retana, Eric Vyncke, and Russ White.
