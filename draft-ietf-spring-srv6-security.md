@@ -147,7 +147,7 @@ We note that SRv6 is under active development and, as such, the above documents 
 
 - SRv6: Segment Routing over IPv6 [RFC8402]
 
-# Threat Model {#threat}
+# Threat Terminology {#threat}
 
 This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model [RFC3552], as well as some concepts from [RFC9055], [RFC7384], [RFC7835] and [RFC9416]. Details regarding inter-domain segment routing (SR) are out of scope for this document.
 
