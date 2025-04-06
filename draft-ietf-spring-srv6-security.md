@@ -20,7 +20,7 @@ venue:
   mail: "spring@ietf.org"
   arch: "https://mailarchive.ietf.org/arch/browse/spring/"
   github: "buraglio/draft-bdmgct-spring-srv6-security"
-  latest: "https://buraglio.github.io/draft-bdmgct-spring-srv6-security/draft-bdmgct-spring-srv6-security.html"
+  latest: "https://github.com/buraglio/draft-bdmgct-spring-srv6-security"
 
 author:
  -
@@ -147,7 +147,7 @@ We note that SRv6 is under active development and, as such, the above documents 
 
 - SRv6: Segment Routing over IPv6 [RFC8402]
 
-# Threat Model {#threat}
+# Threat Terminology {#threat}
 
 This section introduces the threat model that is used in this document. The model is based on terminology from the Internet threat model [RFC3552], as well as some concepts from [RFC9055], [RFC7384], [RFC7835] and [RFC9416]. Details regarding inter-domain segment routing (SR) are out of scope for this document.
 
@@ -436,4 +436,4 @@ This section lists topics that will be discussed further before deciding whether
 # Acknowledgments
 {:numbered="false"}
 
-The authors would like to acknowledge the valuable input and contributions from Zafar Ali, Andrew Alston, Dale Carder, Bruno Decraene, Dhruv Dhody, Darren Dukes, Joel Halpern, Bruno Hassanov, Alvaro Retana, Eric Vyncke, and Russ White.
+The authors would like to acknowledge the valuable input and contributions from Zafar Ali, Andrew Alston, Dale Carder, Bruno Decraene, Dhruv Dhody, Darren Dukes, Joel Halpern, Boris Hassanov, Alvaro Retana, Eric Vyncke, and Russ White.
