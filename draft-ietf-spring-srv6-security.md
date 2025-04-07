@@ -188,7 +188,7 @@ The following figure depicts an example of an SR domain with six attacker types,
 
 As defined in [RFC8402], SR operates within a "trusted domain". Therefore, in the current threat model the SR domain defines the boundary that distinguishes internal from external threats. Specifically, an attack on one domain that is invoked from within a different domain is considered an external attack in the context of the current document.
 
-# Impact
+# Impact {#sec-impact}
 
 One of the important aspects of a threat analysis is the potential impact of each threat. SRv6 allows for the forwarding of IPv6 packets via predetermined SR policies, which determine the paths and the processing of these packets. An attack on SRv6 may cause packets to traverse arbitrary paths and to be subject to arbitrary processing by SR endpoints within an SR domain. This may allow an attacker to perform a number of attacks on the victim networks and hosts that would be mostly unfeasible for a non-SRv6 environment.
 
@@ -300,6 +300,43 @@ A compromised control plane or management plane can impact the network in variou
 Various attacks which are not specific to SRv6 can be used to compromise networks that deploy SRv6. For example, spoofing is not specific to SRv6, but can be used in a network that uses SRv6. Such attacks are outside the scope of this document.
 
 Because SRv6 is completely reliant on IPv6 for addressing, forwarding, and fundamental networking basics, it is potentially subject to any existing or emerging IPv6 vulnerabilities [RFC9099], however, this is out of scope for this document.
+
+## Attacks - Summary
+The following table summarizes the attacks that were described in the previous subsections, and the corresponding impact of each of the attacks. Details about the impact are described in {{sec-impact}}.
+
+~~~~~~~~~~~
++=============+==================+===================================+
+| Attack      | Details          | Impact                            |
++=============+==================+===================================+
+|Modification |Modification of:  |* Unauthorized access              |
+|             |* SID list        |* Avoiding a specific node or path |
+|             |* IPv6 DA         |* Preferring a specific path       |
+|             |Add/remove/modify:|* Causing header modifications     |
+|             |* SRH             |* Causing packets to be discarded  |
+|             |* SRH TLV         |* Resource exhaustion              |
+|             |                  |* Forwarding loops                 |
++-------------+------------------+-----------------------------------+
+|Passive      |Passively listen  |* Reconnaissance                   |
+|listening    |to SRv6-related   |                                   |
+|             |information       |                                   |
++-------------+------------------+-----------------------------------+
+|Packet       |Maliciously inject|* Resource exhaustion              |
+|insertion    |packets with a    |                                   |
+|             |segment list      |                                   |
++-------------+------------------+-----------------------------------+
+|Control and  |Manipulate control|* Unauthorized access              |
+|management   |or management     |* Avoiding a specific node or path |
+|plane attacks|plane in order to |* Preferring a specific path       |
+|             |manipulate SRv6   |* Causing header modifications     |
+|             |functionality     |* Causing packets to be discarded  |
+|             |                  |* Resource exhaustion              |
+|             |                  |* Forwarding loops                 |
++-------------+------------------+-----------------------------------+
+
+~~~~~~~~~~~
+{: #summary-table title="Attack Summary"}
+
+
 
 # Mitigation Methods {#mitigations}
 
