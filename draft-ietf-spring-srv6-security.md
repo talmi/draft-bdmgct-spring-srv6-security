@@ -74,6 +74,7 @@ informative:
   RFC9288:
   RFC9099:
   RFC8200:
+  I-D.wkumari-intarea-safe-limited-domains: 
   I-D.ietf-spring-srv6-srh-compression:
   IANAIPv6SPAR:
     target: https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
@@ -146,6 +147,40 @@ We note that SRv6 is under active development and, as such, the above documents 
 - SRH: Segment Routing Header [RFC8754]
 
 - SRv6: Segment Routing over IPv6 [RFC8402]
+
+
+# SRv6 Security Architecture {#sec-architecture}
+
+The following subsections discuss some SRv6 design considerations that have a direct impact on the security properties of the protocol.
+
+## SRv6 and Limited Domains {#fail-open}
+
+SRv6 is commonly referred to as operating in a Limited Domain [RFC8799]. However, there is currently no IETF consensus on the concept of "Limited Domains" (the concept has been definited in [RFC8799], published as an Independent Submission). In the case of IPv6 SRH, the "Limited Domain" is expected to be achieved via packet filtering. Such an approach has been referred to as "fail-open" in {{I-D.wkumari-intarea-safe-limited-domains}}, which notes that:
+
+>    Fail-open protocols are inherently riskier than fail-closed
+>    protocols, as they rely on perfect configuration of filters on all
+>    interfaces at the boundary of a domain, and, if the filters are
+>    removed for any reason (for example, during troubleshooting), there
+>    is a risk of inbound or outbound leaks.  In addition, some devices or
+>    interfaces may have limitations in the size and complexity of filters
+>    that can be applied, and so adding new filter entries to limit leaks
+>    of a new protocol may not be possible.
+
+This means sccussfully enforcing a "Limited Domain" may be hard and error-prone in practice, and that  e.g. attacks that are expected to be unfeasible from outside of the limited domain may actually become feasible when any of the involved systems fails to enforce the filtering policy that is required to define the limited domain.
+
+
+## Packet Spoofing and Tampering Protection {#tamper-protection}
+
+Spoofing and tampering protection for the IPv6 SRH is provided via the HMAC TLV (see Section "2.1.2. HMAC TLV" of [RFC8754]). However, at least two considerations should be made:
+
+   * The HMAC TLV is OPTIONAL.
+
+   * While it is presumed that unique keys will be employed by each participating node, in  scenarios where the
+     network resorts to manual configuration of pre-shared keys, the same key might be reused by multiple systems
+     as an (incorrect) short-cut to keeeping the problem of pre-shared key configuration manageable.
+
+This limits the extent to which HMAC TLV can be relied upon as a security mechanism that could readily mitigate threats associated with spoofing and tampering protection for the IPv6 SRH.
+
 
 # Threat Terminology {#threat}
 
