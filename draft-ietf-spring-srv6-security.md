@@ -187,15 +187,15 @@ The following figure depicts an example of an SR domain with five attacker types
 
 As defined in [RFC8402], SR operates within a "trusted domain". Therefore, in the current threat model the SR domain defines the boundary that distinguishes internal from external threats. Specifically, an attack on one domain that is invoked from within a different domain is considered an external attack in the context of the current document.
 
-# Impact {#sec-impact}
+# Effect {#sec-effect}
 
-One of the important aspects of a threat analysis is the potential impact of each threat. SRv6 allows for the forwarding of IPv6 packets via predetermined SR policies, which determine the paths and the processing of these packets. An attack on SRv6 may cause packets to traverse arbitrary paths and to be subject to arbitrary processing by SR endpoints within an SR domain. This may allow an attacker to perform a number of attacks on the victim networks and hosts that would be mostly unfeasible for a non-SRv6 environment.
+One of the important aspects of threat analysis is assessing the potential effect or outcome of each threat. SRv6 allows for the forwarding of IPv6 packets via predetermined SR policies, which determine the paths and the processing of these packets. An attack on SRv6 may cause packets to traverse arbitrary paths and to be subject to arbitrary processing by SR endpoints within an SR domain. This may allow an attacker to perform a number of attacks on the victim networks and hosts that would be mostly unfeasible for a non-SRv6 environment.
 
-The threat model in [ANSI-Sec] classifies threats according to their potential impact, defining six categories. For each of these categories we briefly discuss its applicability to SRv6 attacks.
+The threat model in [ANSI-Sec] classifies threats according to their potential effect, defining six categories. For each of these categories we briefly discuss its applicability to SRv6 attacks.
 
 - Unauthorized Access: an attack that results in unauthorized access might be achieved by having an attacker leverage SRv6 to circumvent security controls as a result of security devices being unable to enforce security policies. For example, this can occur if packets are directed through paths where packet filtering policies are not enforced, or if some security policies are not enforced in the presence of IPv6 Extension Headers.
 - Masquerade: various attacks that result in spoofing or masquerading are possible in IPv6 networks. However, these attacks are not specific to SRv6, and are therefore not within the scope of this document.
-- System Integrity: attacks on SRv6 can manipulate the path and the processing that the packet is subject to, thus compromising the integrity of the system. Furthermore, an attack that compromises the control plane and/or the management plane is also a means of impacting the system integrity. Specific SRv6-targeted attack may cause one or more of the following outcomes:
+- System Integrity: attacks on SRv6 can manipulate the path and the processing that the packet is subject to, thus compromising the integrity of the system. Furthermore, an attack that compromises the control plane and/or the management plane is also a means of affecting the system integrity. Specific SRv6-targeted attack may cause one or more of the following outcomes:
   - Avoiding a specific node or path: when an SRv6 policy is manipulated, specific nodes or paths may be bypassed, for example in order to bypass the billing service or avoid access controls and security filters.
   - Preferring a specific path: packets can be manipulated so that they are diverted to a specific path. This can result in allowing various unauthorized services such as traffic acceleration. Alternatively, an attacker can divert traffic to be forwarded through a specific node that the attacker has access to, thus facilitating more complex on-path attacks such as passive listening, recon and various man-in-the-middle attacks.
   - Causing header modifications: SRv6 network programming determines the SR endpoint behavior, including potential header modifications. Thus, one of the potential outcomes of an attack is unwanted header modifications.
@@ -241,8 +241,8 @@ An on-path internal attacker can also modify, insert or delete other extension h
 ### Scope
 An SR modification attack can be performed by on-path attackers. If filtering is deployed at the domain boundaries as described in {{filtering}}, the ability to implement SR modification attacks is limited to on-path internal attackers.
 
-### Impact {#mod-impact}
-SR modification attacks, including adding/removing an SRH, modifying the SID list and modifying the IPv6 DA, can have one or more of the following outcomes, which are described in {{sec-impact}}.
+### Effect {#mod-effect}
+SR modification attacks, including adding/removing an SRH, modifying the SID list and modifying the IPv6 DA, can have one or more of the following outcomes, which are described in {{sec-effect}}.
 
 - Unauthorized access
 - Avoiding a specific node or path
@@ -264,7 +264,7 @@ A reconnaisance attack is limited to on-path internal attackers.
 
 If filtering is deployed at the domain boundaries ({{filtering}}), it prevents any leaks of explicit SRv6 routing information through the boundaries of the administrative domain. In this case external attackers can only collect SRv6-related data in a malfunctioning network in which SRv6-related information is leaked through the boundaries of an SR domain.
 
-### Impact
+### Effect
 While the information collected in a reconnaisance attack does not compromise the confidentiality of the user data, it allows an attacker to gather information about the network which in turn can be used to enable other attacks.
 
 ## Packet Insertion
@@ -277,8 +277,8 @@ Packet insertion can be performed by either on-path or off-path attackers. In th
 
 If filtering is deployed at the domain boundaries ({{filtering}}), insertion attacks can only be implemented by internal attackers.
 
-### Impact
-The main impact of this attack is resource exhaustion which compromises the availability of the network, as described in {{mod-impact}}.
+### Effect
+The main effect of this attack is resource exhaustion, which compromises the availability of the network, as described in {{mod-effect}}.
 
 ## Control and Management Plane Attacks
 
@@ -292,8 +292,8 @@ The control plane and management plane may be either in-band or out-of-band, and
 
 SRv6 domain boundary filtering can be used for mitigating potential control plane and management plane attacks from external attackers. Segment routing does not define any specific security mechanisms in existing control plane or management plane protocols. However, existing control plane and management plane protocols use authentication and security mechanisms to validate the authenticity of information.
 
-### Impact
-A compromised control plane or management plane can impact the network in various possible ways. SR policies can be manipulated by the attacker to avoid specific paths or to prefer specific paths, as described in {{mod-impact}}. Alternatively, the attacker can compromise the availability, either by defining SR policies that load the network resources, as described in {{mod-impact}}, or by blackholing some or all of the SR policies. A passive attacker can use the control plane or management plane messages as a means for recon, similarly to {{mod-impact}}.
+### Effect
+A compromised control plane or management plane can affect the network in various possible ways. SR policies can be manipulated by the attacker to avoid specific paths or to prefer specific paths, as described in {{mod-effect}}. Alternatively, the attacker can compromise the availability, either by defining SR policies that load the network resources, as described in {{mod-effect}}, or by blackholing some or all of the SR policies. A passive attacker can use the control plane or management plane messages as a means for recon, similarly to {{mod-effect}}.
 
 ## Other Attacks
 Various attacks which are not specific to SRv6 can be used to compromise networks that deploy SRv6. For example, spoofing is not specific to SRv6, but can be used in a network that uses SRv6. Such attacks are outside the scope of this document.
@@ -301,11 +301,11 @@ Various attacks which are not specific to SRv6 can be used to compromise network
 Because SRv6 is completely reliant on IPv6 for addressing, forwarding, and fundamental networking basics, it is potentially subject to any existing or emerging IPv6 vulnerabilities [RFC9099], however, this is out of scope for this document.
 
 ## Attacks - Summary
-The following table summarizes the attacks that were described in the previous subsections, and the corresponding impact of each of the attacks. Details about the impact are described in {{sec-impact}}.
+The following table summarizes the attacks that were described in the previous subsections, and the corresponding effect of each of the attacks. Details about the effect are described in {{sec-effect}}.
 
 ~~~~~~~~~~~
 +=============+==================+===================================+
-| Attack      | Details          | Impact                            |
+| Attack      | Details          | Effect                            |
 +=============+==================+===================================+
 |Modification |Modification of:  |* Unauthorized access              |
 |             |* SID list        |* Avoiding a specific node or path |
