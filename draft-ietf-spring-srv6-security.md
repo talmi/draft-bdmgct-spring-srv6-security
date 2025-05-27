@@ -152,7 +152,7 @@ This section introduces the threat taxonomy that is used in this document, based
 
 Internal vs. External:
 
-: An internal attacker in the context of SRv6 is an attacker who is located within an SR domain.  Specifically, an internal attacker either has access to a node in the SR domain, or is located such that it can send and receive packets to and from a node in the SR domain without traversing an SR ingress node or an SR egress node.  External attackers, on the other hand, are not within the SR domain.
+: An internal attacker in the context of SRv6 is an attacker who is located within an SR domain.  Specifically, an internal attacker either has access to a node in the SR domain, or is located within the premises of the SR domain.  External attackers, on the other hand, are not within the SR domain.
 
 On-path vs. Off-path:
 
