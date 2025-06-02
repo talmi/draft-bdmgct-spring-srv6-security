@@ -78,6 +78,9 @@ informative:
   RFC9288:
   RFC9099:
   RFC8200:
+  rfc7835:
+  rfc9050:
+  rfc9602:
   I-D.ietf-spring-srv6-srh-compression:
   I-D.ietf-lsr-ospf-srv6-yang:
   I-D.ietf-lsr-isis-srv6-yang:
@@ -230,6 +233,7 @@ Packet manipulation and processing attacks can be implemented by performing a se
 This section describes attacks that are based on packet manipulation and processing, as well as attacks performed by other means. While it is possible for packet manipulation and processing attacks against all the fields of the IPv6 header and its extension headers, this document limits itself to the IPv6 header and the SRH.
 
 ## Data Plane Attacks
+
 ### Modification Attack {#modification}
 
 #### Overview
@@ -305,7 +309,7 @@ Passive listening enables an attacker to intercept routing protocol messages as 
 
 Active attacks involve the unauthorized injection or alteration of control plane messages. Such attacks can compromise routing integrity by introducing falsified information, modifying legitimate routing data, or triggering incorrect forwarding decisions. These disruptions may result in denial-of-service conditions or traffic misdirection.
 
-For example, an attacker may advertise falsified SIDs to manipulate SR policies. Another example in the context of SRv6 is the advertisement of an incorrect Maximum SID Depth (MSD) value {{rfc8476}}. If the advertised MSD is lower than the actual capability, path computation may fail to compute a viable path. Conversely, if the value is higher than supported, an attempt to instantiate a path that can't be supported by the head-end (the node performing the SID imposition) may occur.
+For example, an attacker may advertise falsified SIDs to manipulate SR policies. Another example in the context of SRv6 is the advertisement of an incorrect Maximum SID Depth (MSD) value {{RFC8476}}. If the advertised MSD is lower than the actual capability, path computation may fail to compute a viable path. Conversely, if the value is higher than supported, an attempt to instantiate a path that can't be supported by the head-end (the node performing the SID imposition) may occur.
 
 #### Scope
 The location of an attacker in the network significantly affects the scope of potential attacks. Off-path attackers are generally limited to injecting malicious routing messages, while on-path attackers can perform a broader range of attacks, including active modification or passive listening.
@@ -317,7 +321,7 @@ Attacks targeting the routing protocol can have diverse impacts on network opera
 #### Overview
 Since SRv6 operates over an IPv6 infrastructure, existing OAM protocols designed for IPv6 networks are applicable to SRv6 as well. Consequently, the security considerations associated with conventional IPv6 OAM protocols are also relevant to SRv6 environments. As noted in {{RFC7276}}, successful attacks on OAM protocols can mislead operators by simulating non-existent failures or by concealing actual network issues. SRv6-specific OAM aspects are specified in {{RFC9259}}.
 
-The O-flag in the SRH serves as a marking bit in user packets to trigger telemetry data collection and export at the segment endpoints. An attacker may exploit this mechanism by setting the O-flag in transit packets, thereby overloading the control plane and degrading system availability. Additionally, an on-path attacker may passively intercept OAM data exported to external analyzers, potentially gaining unauthorized insight into network topology and behavior. 
+The O-flag in the SRH serves as a marking bit in user packets to trigger telemetry data collection and export at the segment endpoints. An attacker may exploit this mechanism by setting the O-flag in transit packets, thereby overloading the control plane and degrading system availability. Additionally, an on-path attacker may passively intercept OAM data exported to external analyzers, potentially gaining unauthorized insight into network topology and behavior.
 
 #### Scope
 Off-path attackers may attempt to degrade system availability by injecting fabricated OAM messages or SRv6 packets with the O-bit set, thereby triggering unnecessary telemetry processing. They may also probe SRv6 nodes to infer information about network state and performance characteristics.
@@ -338,6 +342,7 @@ As with other control plane attacks, an off-path attacker may attempt to inject 
 A successful attack may result in any of the adverse effects described in {{sec-effect}}, potentially impacting availability and operational correctness.
 
 ## Management Plane Attacks
+
 ### Overview
 Similar to the control plane, a compromised management plane can enable a broad range of attacks, including unauthorized manipulation of SR policies and disruption of network availability. The specific threats and their potential impact are influenced by the management protocols in use. As with centralized control systems, management infrastructure may introduce a single point of failure, rendering it susceptible to denial-of-service (DoS) attacks or making it a target for eavesdropping and message tampering.
 
