@@ -141,7 +141,7 @@ The following IETF RFCs were selected for security assessment as part of this ef
    * [RFC9256] : Segment Routing Policy Architecture
    * [RFC9491] : Integration of the Network Service Header (NSH) and Segment Routing for Service Function Chaining (SFC)
    * [RFC9524] : Segment Routing Replication for Multipoint Service Delivery
-   * [RFC9800] : Compressed SRv6 Segment List Encoding 
+   * [RFC9800] : Compressed SRv6 Segment List Encoding
 
 We note that SRv6 is under active development and, as such, the above documents might not cover all protocols employed in an SRv6 deployment.
 
