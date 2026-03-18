@@ -284,6 +284,8 @@ If filtering is deployed at the domain boundaries ({{filtering}}), it prevents a
 #### Effect
 While the information collected in a reconnaissance attack does not compromise the confidentiality of the user data, it allows an attacker to gather information about the network which in turn can be used to enable other attacks.
 
+Passive eavesdropping can also impact end‑user privacy. Observable SRH fields (e.g., the Segment List and SRH TLVs) may enable correlation of flows and tracking of users, endpoints, or services.
+
 ### Packet Insertion
 
 #### Overview
@@ -443,6 +445,7 @@ Practically speaking, this means successfully enforcing a "Trusted Domain" may b
 ### SRH Filtering
 
 Filtering can be performed based on the presence of an SRH. More generally, {{RFC9288}} provides recommendations on the filtering of IPv6 packets containing IPv6 extension headers at transit routers. However, filtering based on the presence of an SRH is not necessarily useful for two reasons:
+
 1. The SRH is optional for SID processing as described in [RFC8754] section 3.1 and 4.1.
 2. A packet containing an SRH may not be destined to the SR domain, it may be simply transiting the domain.
 
@@ -451,13 +454,17 @@ For these reasons SRH filtering is not necessarily a useful method of mitigation
 ### Address Range Filtering
 
 The IPv6 destination address can be filtered at the external interface of the SR ingress node of the SRv6 domain and at all nodes implementing SRv6 SIDs within the SR domain in order to mitigate external attacks. Section 5.1 of [RFC8754] describes this in detail and a summary is presented here:
+
 1. At ingress nodes, any packet entering the SR domain and destined to a SID within the SR domain is dropped.
 2. At every SRv6 enabled node, any packet destined to a SID instantiated at the node from a source address outside the SR domain is dropped.
 
-In order to apply such a filtering mechanism the SR domain needs to have an infrastructure address range for SIDs and an infrastructure address range for source addresses that can be detected and enforced. Some examples of an infrastructure address range for SIDs are:
+In order to apply such a filtering mechanism the SR domain needs to have an infrastructure address range for SIDs and an infrastructure address range for source addresses that can be detected and enforced. This practice helps prevent the use of SRH and SID information to track individual users or reveal communication patterns outside the trusted domain. Some examples of an infrastructure address range for SIDs are:
+
 - The prefix defined in [RFC9602]
 - ULA addresses
 - GUA addresses
+
+To reduce privacy exposure, operators SHOULD allocate SRv6 SIDs from dedicated, internally scoped prefixes that are not reused for customer or subscriber addressing, and enforce in‑depth filtering to prevent these prefixes from leaking outside the SR domain. When constructing SIDs (including any arguments), operators SHOULD avoid embedding user‑identifying information. These practices help prevent the use of SRH information to track individual users or reveal communication patterns outside the trusted domain.
 
 As stated in the security considerations section of [RFC9602], the usage of the prefix allocated by [RFC9602] improves security by making it more simple to filter traffic at the edge of the SR Domains. It is important to note that [RFC9602] allocates and makes a dedicated prefix available for SRv6 SIDs for use inside a trusted SRv6 domain. Use of other prefixes for this purpose will result in further security considerations such as potential SID pool route leakage or more complicated filtering requirements, increasing the likelihood of human or configuration error.
 
