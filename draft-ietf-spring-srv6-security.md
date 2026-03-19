@@ -464,8 +464,6 @@ In order to apply such a filtering mechanism the SR domain needs to have an infr
 - ULA addresses
 - GUA addresses
 
-To reduce privacy exposure, operators SHOULD allocate SRv6 SIDs from dedicated, internally scoped prefixes that are not reused for customer or subscriber addressing, and enforce in‑depth filtering to prevent these prefixes from leaking outside the SR domain. When constructing SIDs (including any arguments), operators SHOULD avoid embedding user‑identifying information. These practices help prevent the use of SRH information to track individual users or reveal communication patterns outside the trusted domain.
-
 As stated in the security considerations section of [RFC9602], the usage of the prefix allocated by [RFC9602] improves security by making it more simple to filter traffic at the edge of the SR Domains. It is important to note that [RFC9602] allocates and makes a dedicated prefix available for SRv6 SIDs for use inside a trusted SRv6 domain. Use of other prefixes for this purpose will result in further security considerations such as potential SID pool route leakage or more complicated filtering requirements, increasing the likelihood of human or configuration error.
 
 Many operators reserve a /64 block for all loopback addresses and allocate /128 for each loopback interface. This simplifies the filtering of permitted source addresses.
