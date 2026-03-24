@@ -97,7 +97,7 @@ informative:
   I-D.ietf-pce-segment-routing-policy-cp:
   I-D.ietf-idr-bgp-ls-sr-policy:
   ITU-Sec:
-    title: ITU-T M.3016.1, "Security for the management plane: Security requirements"
+    title: "ITU-T M.3016.1, Security for the management plane: Security requirements"
     date: 2005
   CanSecWest2007:
     title: IPv6 Routing Header Security
