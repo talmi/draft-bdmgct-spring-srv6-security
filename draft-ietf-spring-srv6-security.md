@@ -442,6 +442,7 @@ Practically speaking, this means successfully enforcing a "Trusted Domain" may b
 ### SRH Filtering
 
 Filtering can be performed based on the presence of an SRH. More generally, {{RFC9288}} provides recommendations on the filtering of IPv6 packets containing IPv6 extension headers at transit routers. However, filtering based on the presence of an SRH is not necessarily useful for two reasons:
+
 1. The SRH is optional for SID processing as described in [RFC8754] section 3.1 and 4.1.
 2. A packet containing an SRH may not be destined to the SR domain, it may be simply transiting the domain.
 
@@ -450,10 +451,12 @@ For these reasons SRH filtering is not necessarily a useful method of mitigation
 ### Address Range Filtering
 
 The IPv6 destination address can be filtered at the external interface of the SR ingress node of the SRv6 domain and at all nodes implementing SRv6 SIDs within the SR domain in order to mitigate external attacks. Section 5.1 of [RFC8754] describes this in detail and a summary is presented here:
+
 1. At ingress nodes, any packet entering the SR domain and destined to a SID within the SR domain is dropped.
 2. At every SRv6 enabled node, any packet destined to a SID instantiated at the node from a source address outside the SR domain is dropped.
 
-In order to apply such a filtering mechanism the SR domain needs to have an infrastructure address range for SIDs and an infrastructure address range for source addresses that can be detected and enforced. Some examples of an infrastructure address range for SIDs are:
+In order to apply such a filtering mechanism the SR domain needs to have an infrastructure address range for SIDs and an infrastructure address range for source addresses that can be detected and enforced. This practice helps prevent the use of SRH and SID information to track individual users or reveal communication patterns outside the trusted domain. Some examples of an infrastructure address range for SIDs are:
+
 - The prefix defined in [RFC9602]
 - ULA addresses
 - GUA addresses
@@ -529,8 +532,7 @@ Upper-layer checksum calculations rely on a pseudo-header that includes the IPv6
 
 ## Limited capability hardware
 
-In some cases, access control list capabilities are a resource shared with other features across a given hardware platform. Filtering capabilities should be considered along with other hardware reliant functions such as VLAN scale, route table size, MAC address table size, etc. Filtering both at the control and data plane may or may not require shared resources.
-For example, some platforms may require allocating resources from route table size in order to accommodate larger numbers of access lists. Hardware and software configurations should be considered when designing the filtering capabilities for an SRv6 control and data plane.
+In some cases, access-control list (ACL) capacity is a scarce and potentially shared hardware resource (e.g., TCAM/ACL tables). Depending on the scale of the network, SRH filtering can consume a non‑trivial portion of these resources. Since filtering resources can be shared with other features across a given hardware platform, filtering capabilities should be considered along with other hardware reliant functions such as VLAN scale, route table size, MAC address table size, etc. Filtering both at the control and data plane may or may not require shared resources. For example, some platforms may require allocating resources from route table size in order to accommodate larger numbers of access lists. Hardware and software configurations should be considered when designing the filtering capabilities for an SRv6 control and data plane.
 
 # Security Considerations
 
