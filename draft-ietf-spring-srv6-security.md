@@ -444,7 +444,7 @@ Practically speaking, this means successfully enforcing a "Trusted Domain" may b
 Filtering can be performed based on the presence of an SRH. More generally, {{RFC9288}} provides recommendations on the filtering of IPv6 packets containing IPv6 extension headers at transit routers. However, filtering based on the presence of an SRH is not necessarily useful for two reasons:
 
 1. The SRH is optional for SID processing as described in [RFC8754] section 3.1 and 4.1.
-2. A packet containing an SRH may not be destined to the SR domain, it may be simply transiting the domain.
+2. A packet containing an SRH may not be destined to the SR domain, it may be simply transiting the domain. This scenario is mitigated by encapsulating packets on the domain boundary, as discussed in {{encap}}.
 
 For these reasons SRH filtering is not necessarily a useful method of mitigation.
 
@@ -469,7 +469,7 @@ Failure to implement address range filtering at ingress nodes is mitigated with 
 
 Filtering on prefixes has been shown to be useful, specifically [RFC8754]'s description of packet filtering. There are no known limitations with filtering on infrastructure addresses, and [RFC9099] expands on the concept with control plane filtering.
 
-## Encapsulation of Packets
+## Encapsulation of Packets {#encap}
 
 Packets steered within an SR domain are typically encapsulated using IPv6. Encapsulation at the SR ingress node, followed by decapsulation at the SR egress node and forwarding of the inner packet without lookup, provides two key benefits:
 
@@ -480,7 +480,7 @@ Practices outlined in Section 5 of [RFC8754] should be followed to ensure exclus
 
 ## Hashed Message Authentication Code (HMAC) {#hmac}
 
-The SRH can be secured by an HMAC TLV, as defined in [RFC8754]. The HMAC is an optional TLV that secures the segment list, the SRH flags, the SRH Last Entry field and the IPv6 source address. A pre-shared key is used in the generation and verification of the HMAC.
+The integrity of the SRH can be protected by an HMAC TLV, as defined in [RFC8754]. The HMAC is an optional TLV that secures the segment list, the SRH flags, the SRH Last Entry field and the IPv6 source address. A pre-shared key is used in the generation and verification of the HMAC.
 
 Using an HMAC in an SR domain can mitigate some of the SR Modification Attacks ({{modification}}).
 
@@ -502,7 +502,7 @@ Routing protocols can employ authentication and/or encryption to protect against
 
 In centralized SRv6 control plane architectures, such as those described in {{I-D.ietf-pce-segment-routing-policy-cp}}, it is RECOMMENDED that communication between PCEs and PCCs be secured using authenticated and encrypted sessions. This is typically achieved using Transport Layer Security (TLS), following the guidance in [RFC8253] and best practices in [RFC9325].
 
-When the O-flag is used for Operations, Administration, and Maintenance (OAM) functions, as defined in [RFC9259], implementations should enforce rate limiting to mitigate potential denial-of-service (DoS) attacks triggered by excessive control plane signaling.
+When the O-flag is used for Operations, Administration, and Maintenance (OAM) functions, as defined in [RFC9259], implementations should enforce rate limiting to mitigate potential denial-of-service (DoS) attacks triggered by excessive control plane signaling. Furthermore, if the HMAC TLV is used, it provides integrity protection of the O-flag as described in {{hmac}}.  
 
 The control plane should be confined to a trusted administrative domain. As specified in {{I-D.ietf-idr-bgp-ls-sr-policy}}, SR Policy information advertised via BGP should be restricted to authorized nodes, controllers, and applications within this domain. Similarly, the use of the O-flag is assumed to occur only within such a trusted environment, where the risk of abuse is minimized.
 
@@ -521,10 +521,10 @@ SRv6-specific YANG modules should be designed with the same security considerati
 # Implications on Existing Equipment
 
 ## Middle Box Filtering Issues
-When an SRv6 packet is forwarded in the SRv6 domain, its destination address changes constantly and the real destination address is hidden. Security devices on SRv6 network may not learn the real destination address and fail to perform access control on some SRv6 traffic.
+When an SRv6 packet is forwarded in the SRv6 domain, its IPv6 destination address is modified in each segment and the final destination address is not available in the IPv6 header. Security devices on SRv6 network may not learn the real destination address and fail to perform access control on some SRv6 traffic.
 
 The security devices on SRv6 networks need to take care of SRv6 packets. However, SRv6 packets are often encapsulated by an SR ingress device with an IPv6 encapsulation that has the loopback address of the SR ingress device as a source address. As a result, the address information of SR packets may be asymmetric, resulting in improper traffic filter problems, which affects the effectiveness of security devices.
-For example, along the forwarding path in SRv6 network, the SR-aware firewall will check the association relationships of the bidirectional VPN traffic packets. It is therefore able to retrieve the final destination of an SRv6 packet from the last entry in the SRH. When the <source, destination> tuple of the packet from PE1 (Provider Edge 1) to PE2 is <PE1-IP-ADDR, PE2-VPN-SID>, and the other direction is <PE2-IP-ADDR, PE1-VPN-SID>, the source address and destination address of the forward and backward traffic are regarded as different flows. Thus, legitimate traffic may be blocked by the firewall.
+For example, along the forwarding path in SRv6 network, the SR-aware firewall will check the association relationships of the bidirectional VPN traffic packets. It is therefore able to retrieve the final destination of an SRv6 packet from the last entry in the SRH. When the <source, destination> tuple of the packet from PE1 (Provider Edge 1) to PE2 is <PE1-IP-ADDR, PE2-VPN-SID>, and the other direction is <PE2-IP-ADDR, PE1-VPN-SID>, the source address and destination address of the forward and backward traffic are regarded as different flows. Thus, legitimate traffic may be blocked by the firewall. Consistent with Section 3.5.2.4 of [RFC9288], operators should avoid dropping packets that carry the SRH (Routing Type 4) within an SR domain and instead deploy filtering policies at transit routers that preserve SRv6 forwarding semantics.
 
 Forwarding SRv6 traffic through devices that are not SRv6-aware might in some cases lead to unpredictable behavior. Security appliances, monitoring systems, and middle boxes could react in different ways if they lack support for SRv6 mechanisms, such as the Segment Routing Header (SRH) [RFC8754]. Additionally, implementation limitations in the processing of IPv6 packets with extension headers may result in SRv6 packets being dropped [RFC7872],[RFC9098].
 
