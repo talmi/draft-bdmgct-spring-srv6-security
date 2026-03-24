@@ -96,10 +96,9 @@ informative:
   I-D.ietf-lsr-isis-srv6-yang:
   I-D.ietf-pce-segment-routing-policy-cp:
   I-D.ietf-idr-bgp-ls-sr-policy:
-  ANSI-Sec:
-    title: "Operations, Administration, Maintenance, and Provisioning Security Requirements for the Public Telecommunications Network: A Baseline of Security Requirements for the Management Plane"
-    target: https://www.ieee802.org/1/ecsg-linksec/meetings/July03/3m150075.pdf
-    date: 2003
+  ITU-Sec:
+    title: ITU-T M.3016.1, "Security for the management plane: Security requirements"
+    date: 2005
   CanSecWest2007:
     title: IPv6 Routing Header Security
     target: https://airbus-seclab.github.io/ipv6/IPv6_RH_security-csw07.pdf
@@ -180,7 +179,7 @@ Data plane vs. control plane vs. Management plane:
 The following figure depicts an example of an SR domain with five attacker types, labeled 1-5. As an example, attacker 2 is located along the path between the SR ingress node and SR endpoint 1, and is therefore an on-path attacker both in the data plane and in the control plane. Thus, attacker 2 can listen, insert, delete, modify or replay data plane and/or control plane packets in transit. Off-path attackers, such as attackers 4 and 5, can insert packets, and in some cases can passively listen to some traffic, such as multicast transmissions. In this example a Path Computation Element as a Central Controller (PCECC) [RFC9050] is used as part of the control plane. Thus, attacker 3 is an internal on-path attacker in the control plane, as it is located along the path between the PCECC and SR endpoint 1.
 
 ~~~~~~~~~~~
-  1.on-path   2.on-path   3.mgmt.  PCE as a Central  4.off-path 5.off-path
+  1.on-path   2.on-path   3.cont.  PCE as a Central  4.off-path 5.off-path
   external    internal    plane    Controller        internal   external
   attacker    attacker    on-path  (PCECC)           attacker   attacker
        |            |           |        |            |          |
@@ -204,11 +203,11 @@ As defined in [RFC8402], SR operates within a "trusted domain". Therefore, in th
 
 # Effect {#sec-effect}
 
-One of the important aspects of threat analysis is assessing the potential effect or outcome of each threat. SRv6 allows for the forwarding of IPv6 packets via predetermined SR policies, which determine the paths and the processing of these packets. An attack on SRv6 may cause packets to traverse arbitrary paths and to be subject to arbitrary processing by SR endpoints within an SR domain. This may allow an attacker to perform a number of attacks on the victim networks and hosts that would be mostly unfeasible for a non-SRv6 environment.
+One of the important aspects of threat analysis is assessing the potential effect or outcome of each threat. SRv6 allows for the forwarding of IPv6 packets via predetermined SR policies, which determine the paths and the processing of these packets. An attack on SRv6 may cause packets to traverse arbitrary paths and to be subject to arbitrary processing by SR endpoints and transit routers within an SR domain. This may allow an attacker to perform a number of attacks on the victim networks and hosts that would be mostly unfeasible for a non-SRv6 environment.
 
-The threat model in [ANSI-Sec] classifies threats according to their potential effect, defining six categories. For each of these categories we briefly discuss its applicability to SRv6 attacks.
+The threat model in [ITU-Sec] classifies threats according to their potential effect, defining six categories. For each of these categories we briefly discuss its applicability to SRv6 attacks.
 
-- Unauthorized Access: an attack that results in unauthorized access might be achieved by having an attacker leverage SRv6 to circumvent security controls as a result of security devices that are unable to enforce security policies for SRv6. For example, this can occur if packets are directed through paths where packet filtering policies are not enforced, or if some security policies are not enforced in the presence of IPv6 Extension Headers.
+- Unauthorized Access: an attacker may leverage SRv6 to circumvent security controls when security devices fail to enforce SRv6 policies. For example, this can occur if packets are directed through paths where packet filtering policies are not enforced, or if some security policies are not enforced in the presence of IPv6 Extension Headers.
 - Masquerade: various attacks that result in spoofing or masquerading are possible in IPv6 networks. However, these attacks are not specific to SRv6, and are therefore not within the scope of this document.
 - System Integrity: attacks on SRv6 can manipulate the path and the processing that the packet is subject to, thus compromising the integrity of the system. Furthermore, an attack that compromises the control plane and/or the management plane is also a means of affecting the system integrity. A specific SRv6-targeted attack may cause one or more of the following outcomes:
   - Avoiding a specific node or path: when an SRv6 policy is manipulated, specific nodes or paths may be bypassed, for example in order to avoid the billing service or circumvent access controls and security filters.
@@ -221,7 +220,7 @@ The threat model in [ANSI-Sec] classifies threats according to their potential e
   - Forwarding loops: an attacker might achieve attack amplification by increasing the number hops that each packet is forwarded through and thus increase the load on the network. For instance, a set of SIDs can be inserted in a way that creates a forwarding loop ([RFC8402], [RFC5095], [CanSecWest2007]) and thus loads the nodes along the loop.
   - Causing packets to be discarded: an attacker may cause a packet to be forwarded to a point in the network where it can no longer be forwarded, causing the packet to be discarded.
 
-{{attacks}} discusses specific implementations of these attacks, and possible mitigations are discussed in {{mitigations}}.
+Note that the categories in this section are effects‑based and intentionally not mutually exclusive; for example, "circumvent access controls and security filters" also falls under Unauthorized Access, but is listed here to emphasize the system integrity impact of path/policy manipulation. {{attacks}} discusses specific implementations of these attacks, and possible mitigations are discussed in {{mitigations}}.
 
 # Attacks {#attacks}
 
@@ -284,9 +283,7 @@ If filtering is deployed at the domain boundaries ({{filtering}}), it prevents a
 #### Effect
 While the information collected in a reconnaissance attack does not compromise the confidentiality of the user data, it allows an attacker to gather information about the network which in turn can be used to enable other attacks.
 
-Passive eavesdropping can also impact end‑user privacy. Observable SRH fields (e.g., the Segment List and SRH TLVs) may enable correlation of flows and tracking of users, endpoints, or services.
-
-### Packet Insertion
+### Packet Insertion and Replaying
 
 #### Overview
 In a packet insertion attack packets are inserted (injected) into the network with a segment list. The attack can be applied either by using synthetic packets or by replaying previously recorded packets.
@@ -416,11 +413,11 @@ The following table summarizes the attacks that were described in the previous s
 +-------------+------------------+-----------------------------------+
 
 ~~~~~~~~~~~
-{: #summary-table title="Attack Summary"}
+{: #summary-table title="Summary of Attacks"}
 
 # Mitigation Methods {#mitigations}
 
-This section presents methods that can be used to mitigate the threats and issues that were presented in previous sections. This section does not introduce new security solutions or protocols.
+This section presents methods for mitigating the threats and issues that were presented in previous sections. This section does not introduce new security solutions or protocols.
 
 ## Trusted Domains and Filtering {#filtering}
 
