@@ -162,7 +162,7 @@ We note that SRv6 is under active development and, as such, the above documents 
 
 # Threat Terminology {#threat}
 
-This section introduces the threat taxonomy that is used in this document. This taxonomy is based on terminology from the Internet threat model [RFC3552], as well as some concepts from [RFC9055], [RFC7384], [RFC7835], and [RFC9416]. 
+This section introduces the threat taxonomy that is used in this document. This taxonomy is based on terminology from the Internet threat model [RFC3552], as well as some concepts from [RFC9055], [RFC7384], [RFC7835], and [RFC9416].
 
 Internal vs. External:
 
