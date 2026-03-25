@@ -283,6 +283,8 @@ If filtering is deployed at the domain boundaries ({{filtering}}), it prevents a
 #### Effect
 While the information collected in a reconnaissance attack does not compromise the confidentiality of the user data, it allows an attacker to gather information about the network which in turn can be used to enable other attacks.
 
+Passive eavesdropping can also impact end‑user privacy. Observable SRH fields (e.g., the Segment List and SRH TLVs) may enable correlation of flows and tracking of users, endpoints, or services.
+
 ### Packet Insertion and Replaying
 
 #### Overview
